@@ -1,3 +1,6 @@
+import com.android.build.api.dsl.BuildType
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +9,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
 }
+
 
 android {
     namespace = "eu.anifantakis.project.library.masterdetailmodern"
@@ -24,9 +28,15 @@ android {
         }
     }
 
+    val apiKey = gradleLocalProperties(project.rootDir, providers).getProperty("API_KEY")
     buildTypes {
-        release {
+        debug {
             isMinifyEnabled = false
+            configureDebugBuildType(apiKey)
+        }
+        release {
+            configureDebugBuildType(apiKey)
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -91,6 +102,11 @@ dependencies {
     // Kermit (KMM Logging instead of Timber that supports only Android)
     implementation(libs.kermit)
 
+    // Google Fonts
+    implementation(libs.androidx.ui.text.google.fonts)
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,4 +114,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+private fun BuildType.configureDebugBuildType(apiKey: String) {
+    buildConfigField("String", "API_KEY", "\"$apiKey\"")
+    buildConfigField("String", "BASE_URL", "\"https://themoviedb.org\"")
+}
+
+private fun BuildType.configureReleaseBuildType(apiKey: String) {
+    buildConfigField("String", "API_KEY", "\"$apiKey\"")
+    buildConfigField("String", "BASE_URL", "\"https://themoviedb.org\"")
 }
