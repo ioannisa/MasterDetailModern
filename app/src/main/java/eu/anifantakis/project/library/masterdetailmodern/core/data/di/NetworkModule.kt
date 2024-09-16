@@ -17,7 +17,7 @@ object MoviesHttpClient : Qualifier {
 val networkModule = module {
 
     single(qualifier = AuthHttpClient) {
-        HttpClientFactory().build(BuildConfig.BASE_URL_MOVIES)
+        HttpClientFactory().build(BuildConfig.BASE_URL_AUTH)
     }
 
     single(qualifier = MoviesHttpClient) {

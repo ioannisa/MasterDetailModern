@@ -12,7 +12,7 @@ class AuthRepositoryImpl(
 ): AuthRepository {
     override suspend fun register(email: String, password: String): EmptyDataResult<DataError.Network> {
         return httpClient.post<RegisterRequest, Unit>(
-            route = "/register",
+            route = "/auth/login",
             body = RegisterRequest(
                 email = email,
                 password = password
