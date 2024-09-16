@@ -2,6 +2,8 @@ package eu.anifantakis.project.library.masterdetailmodern.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val correctGreen = Color(0xFF4CAF50)
+
 val primaryLight = Color(0xFF415F91)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFD6E3FF)

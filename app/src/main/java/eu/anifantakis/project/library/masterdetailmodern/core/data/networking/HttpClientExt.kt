@@ -21,8 +21,9 @@ suspend inline fun <reified Response: Any> HttpClient.get(
     queryParameters: Map<String, Any?> = mapOf()
 ): Result<Response, DataError.Network> {
     return safeCall {
-        delete {
-            url(constructRoute(route))
+        get {
+            //url(constructRoute(route))
+            url(route)
             queryParameters.forEach { (key, value) ->
                 parameter(key, value)
             }
@@ -36,7 +37,8 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.post(
 ): Result<Response, DataError.Network> {
     return safeCall {
         post {
-            url(constructRoute(route))
+            //url(constructRoute(route))
+            url(route)
             setBody(body)
         }
     }
@@ -47,8 +49,9 @@ suspend inline fun <reified Response: Any> HttpClient.delete(
     queryParameters: Map<String, Any?> = mapOf()
 ): Result<Response, DataError.Network> {
     return safeCall {
-        get {
-            url(constructRoute(route))
+        delete {
+            //url(constructRoute(route))
+            url(route)
             queryParameters.forEach { (key, value) ->
                 parameter(key, value)
             }
@@ -61,14 +64,14 @@ suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): Result<T, 
         responseToResult(execute())
     } catch (e: UnresolvedAddressException) {
         e.printStackTrace()
-        return Result.Failure(DataError.Network.NO_INTERNET)
+        Result.Failure(DataError.Network.NO_INTERNET)
     } catch (e: SerializationException) {
         e.printStackTrace()
-        return Result.Failure(DataError.Network.SERIALIZATION)
+        Result.Failure(DataError.Network.SERIALIZATION)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         e.printStackTrace()
-        return Result.Failure(DataError.Network.UNKNOWN)
+        Result.Failure(DataError.Network.UNKNOWN)
     }
 }
 
@@ -85,10 +88,10 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
     }
 }
 
-fun constructRoute(route: String): String {
-    return when {
-        route.contains(BuildConfig.BASE_URL) -> route
-        route.startsWith("/") -> BuildConfig.BASE_URL + route
-        else -> "${BuildConfig.BASE_URL}/$route"
-    }
-}
+//fun constructRoute(route: String): String {
+//    return when {
+//        route.contains(BuildConfig.BASE_URL) -> route
+//        route.startsWith("/") -> BuildConfig.BASE_URL + route
+//        else -> "${BuildConfig.BASE_URL}/$route"
+//    }
+//}

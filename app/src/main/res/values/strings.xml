@@ -8,4 +8,21 @@
     <string name="error_server_error">Something\'s wrong on the server side, try again.</string>
     <string name="error_serialization">Unable to parse data.</string>
     <string name="error_unknown">An unknown error occurred.</string>
+    <string name="welcome_to_app">Welcome to Recipes App</string>
+    <string name="app_description">This application demonstrates a modern approach to Android Developent using best practices in a single module app</string>
+    <string name="create_account">Create Account</string>
+    <string name="email">Email</string>
+    <string name="example_email">email@example.com</string>
+    <string name="must_be_a_valid_email">Must be a valid email</string>
+    <string name="hide_password">Turn password visibility off</string>
+    <string name="show_password">Turn password visibility on</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Password</string>
+    <string name="at_least_x_characters">At least %d characters</string>
+    <string name="contains_number">Contains number</string>
+    <string name="contains_lowercase_character">Contains lowercase character</string>
+    <string name="contains_uppercase_character">Contains uppercase character</string>
+    <string name="contains_symbol">Contains symbol</string>
+    <string name="register">Register</string>
+    <string name="error_email_exists">This email already exists</string>
 </resources>

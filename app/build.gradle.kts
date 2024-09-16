@@ -28,6 +28,10 @@ android {
         }
     }
 
+    // add your API_KEY (if your app needs one) inside the "local.properties" file
+    // example:
+    // API_KEY=abcdefg12345
+
     val apiKey = gradleLocalProperties(project.rootDir, providers).getProperty("API_KEY")
     buildTypes {
         debug {
@@ -99,13 +103,11 @@ dependencies {
     // Ktor
     implementation(libs.bundles.ktor)
 
-    // Kermit (KMM Logging instead of Timber that supports only Android)
-    implementation(libs.kermit)
+    // Timber for logging
+    implementation(libs.timber)
 
     // Google Fonts
     implementation(libs.androidx.ui.text.google.fonts)
-
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -117,11 +119,11 @@ dependencies {
 }
 
 private fun BuildType.configureDebugBuildType(apiKey: String) {
-    buildConfigField("String", "API_KEY", "\"$apiKey\"")
-    buildConfigField("String", "BASE_URL", "\"https://themoviedb.org\"")
+    buildConfigField("String", "API_KEY_MOVIES", "\"$apiKey\"")
+    buildConfigField("String", "BASE_URL_MOVIES", "\"https://themoviedb.org\"")
 }
 
 private fun BuildType.configureReleaseBuildType(apiKey: String) {
-    buildConfigField("String", "API_KEY", "\"$apiKey\"")
-    buildConfigField("String", "BASE_URL", "\"https://themoviedb.org\"")
+    buildConfigField("String", "API_KEY_MOVIES", "\"$apiKey\"")
+    buildConfigField("String", "BASE_URL_MOVIES", "\"https://themoviedb.org\"")
 }
