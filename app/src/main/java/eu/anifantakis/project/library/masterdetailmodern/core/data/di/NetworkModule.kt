@@ -1,27 +1,25 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.data.di
 
 import eu.anifantakis.project.library.masterdetailmodern.BuildConfig
-import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.HttpClientFactory
-import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.QualifierValue
+import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.AuthHttpClient
+import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.MoviesHttpClient
 import org.koin.dsl.module
 
-object AuthHttpClient : Qualifier {
-    override val value: QualifierValue = "AuthHttpClient"
-}
-
-object MoviesHttpClient : Qualifier {
-    override val value: QualifierValue = "MoviesHttpClient"
-}
 
 val networkModule = module {
-
-    single(qualifier = AuthHttpClient) {
-        HttpClientFactory().build(BuildConfig.BASE_URL_AUTH)
+    single<AuthHttpClient> {
+        AuthHttpClient(
+            tag = "Auth",
+            baseUrl = BuildConfig.BASE_URL_AUTH
+        )
     }
 
-    single(qualifier = MoviesHttpClient) {
-        HttpClientFactory().build(BuildConfig.BASE_URL_MOVIES, BuildConfig.API_KEY_MOVIES)
+    single<MoviesHttpClient> {
+        MoviesHttpClient(
+            tag = "Movies",
+            baseUrl = BuildConfig.BASE_URL_MOVIES,
+            apiKey = BuildConfig.API_KEY_MOVIES
+        )
     }
 }
 
