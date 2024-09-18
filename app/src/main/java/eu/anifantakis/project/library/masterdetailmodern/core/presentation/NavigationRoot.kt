@@ -5,6 +5,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.authGraph
+import kotlinx.serialization.Serializable
+
+sealed interface NavTree {
+    @Serializable
+    object Auth: NavTree
+}
 
 @Composable
 fun NavigationRoot(
@@ -13,7 +19,7 @@ fun NavigationRoot(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "auth"
+        startDestination = NavTree.Auth
     ) {
         authGraph(navController)
     }
