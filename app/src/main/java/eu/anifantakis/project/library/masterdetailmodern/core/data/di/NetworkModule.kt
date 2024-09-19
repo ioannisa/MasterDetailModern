@@ -10,7 +10,8 @@ val networkModule = module {
     single<AuthHttpClient> {
         AuthHttpClient(
             tag = "Auth",
-            baseUrl = BuildConfig.BASE_URL_AUTH
+            baseUrl = BuildConfig.BASE_URL_AUTH,
+            persistManager = get()
         )
     }
 

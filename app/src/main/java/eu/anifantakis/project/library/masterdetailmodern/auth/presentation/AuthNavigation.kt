@@ -1,5 +1,6 @@
 package eu.anifantakis.project.library.masterdetailmodern.auth.presentation
 
+import androidx.compose.material3.Text
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -44,6 +45,10 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
 
                 onSuccessfulRegistration = { navController.navigate(AuthNavTree.Login) }
             )
+        }
+
+        composable<AuthNavTree.Login> {
+            Text("Login Screen")
         }
     }
 }

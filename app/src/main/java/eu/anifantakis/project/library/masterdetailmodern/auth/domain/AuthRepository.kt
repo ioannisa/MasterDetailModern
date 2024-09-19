@@ -5,6 +5,6 @@ import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.EmptyD
 
 interface AuthRepository {
 
-    suspend fun register(email: String, password: String): EmptyDataResult<DataError.Network>
+    suspend fun register(username: String, password: String): EmptyDataResult<DataError.Network>
 
 }

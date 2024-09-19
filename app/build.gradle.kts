@@ -109,6 +109,9 @@ dependencies {
     // Google Fonts
     implementation(libs.androidx.ui.text.google.fonts)
 
+    // Secured Android Persistence
+    implementation(libs.securedandroidpersistence)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

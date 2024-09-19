@@ -8,6 +8,16 @@ class UserDataValidator(
         return patternValidator.matches(email.trim())
     }
 
+    fun isValidUsername(username: String): Boolean {
+        for (char in username.substring(1)) {
+            if (!char.isLetterOrDigit() && char != '_') {
+                return false
+            }
+        }
+
+        return username.length >= 6 && username[0].isLetter()
+    }
+
     fun validatePassword(password: String): PasswordValidationState {
         val hasMinLength = password.length >= MIN_PASSWORD_LENGTH
         val hasNumber = password.any { it.isDigit() }
