@@ -5,12 +5,12 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.5"
+lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
-composeBom = "2024.09.01"
+composeBom = "2024.09.02"
 
 com-google-devtools-ksp = "2.0.0-1.0.21"
-navigationCompose = "2.8.0"
+navigationCompose = "2.8.1"
 parcelize = "2.0.0"
 kotlinxSerialization = "2.0.0"
 kotlinxSerializationJson = "1.6.3"
@@ -22,7 +22,8 @@ ktorClientLogging = "2.3.8"
 koin = "3.5.3"
 securedandroidpersistence = "1.0.12"
 timber = "5.0.1"
-uiTextGoogleFonts = "1.7.1"
+uiTextGoogleFonts = "1.7.2"
+coreSplashscreen = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 securedandroidpersistence = { module = "com.github.ioannisa:SecuredAndroidPersistence", version.ref = "securedandroidpersistence" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

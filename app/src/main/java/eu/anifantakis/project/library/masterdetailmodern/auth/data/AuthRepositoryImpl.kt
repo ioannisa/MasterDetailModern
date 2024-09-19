@@ -44,4 +44,8 @@ class AuthRepositoryImpl(
         }
         return result.asEmptyDataResult()
     }
+
+    override suspend fun fetchAuthInfo(): AuthHttpClient.AuthInfo {
+        return httpClient.loadAuthInfo()
+    }
 }

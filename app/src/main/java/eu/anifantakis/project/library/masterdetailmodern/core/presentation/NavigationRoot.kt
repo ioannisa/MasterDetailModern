@@ -1,5 +1,6 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.presentation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -15,12 +16,14 @@ sealed interface NavTree {
 
 @Composable
 fun NavigationRoot(
+    innerPadding: PaddingValues,
+    isLoggedIn: Boolean,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavTree.Auth
+        startDestination = if (!isLoggedIn) { NavTree.Auth } else { NavTree.Movies }
     ) {
         authGraph(navController)
         moviesGraph(navController)
