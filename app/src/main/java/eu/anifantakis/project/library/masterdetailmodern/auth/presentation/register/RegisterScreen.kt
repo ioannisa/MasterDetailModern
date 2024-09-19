@@ -185,7 +185,7 @@ private fun LoginSection(
         ) {
             PasswordRequirement(
                 text = stringResource(R.string.at_least_x_characters, UserDataValidator.MIN_PASSWORD_LENGTH),
-                isValid = state.passwordValidationState.isValidPassword
+                isValid = state.passwordValidationState.hasMinLength
             )
 
             PasswordRequirement(
