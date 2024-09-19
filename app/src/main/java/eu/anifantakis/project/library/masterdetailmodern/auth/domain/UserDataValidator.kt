@@ -9,13 +9,15 @@ class UserDataValidator(
     }
 
     fun isValidUsername(username: String): Boolean {
-        for (char in username.substring(1)) {
-            if (!char.isLetterOrDigit() && char != '_') {
-                return false
+        if (username.length >= 6) {
+            for (char in username.substring(1)) {
+                if (!char.isLetterOrDigit() && char != '_') {
+                    return false
+                }
             }
+            return username[0].isLetter()
         }
-
-        return username.length >= 6 && username[0].isLetter()
+        return false
     }
 
     fun validatePassword(password: String): PasswordValidationState {

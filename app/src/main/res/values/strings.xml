@@ -25,4 +25,5 @@
     <string name="contains_symbol">Contains symbol</string>
     <string name="register">Register</string>
     <string name="error_email_exists">This email already exists</string>
+    <string name="username">username</string>
 </resources>

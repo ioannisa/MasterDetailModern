@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -59,4 +60,8 @@ object Icons {
     val fastFood: ImageVector
         @Composable
         get() = Icons.Outlined.Fastfood
+
+    val person: ImageVector
+        @Composable
+        get() = Icons.Outlined.Person
 }

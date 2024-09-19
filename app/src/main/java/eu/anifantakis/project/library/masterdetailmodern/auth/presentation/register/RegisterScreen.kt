@@ -168,6 +168,18 @@ private fun LoginSection(
             keyboardType = KeyboardType.Email
         )
 
+        AppTextField(
+            value = state.username,
+            onValueChange = onUsernameChanged,
+            endIcon = if (state.isValidUsername) {
+                Icons.check
+            } else null,
+            startIcon = Icons.person,
+            hint = stringResource(R.string.username),
+            title = stringResource(R.string.username),
+            keyboardType = KeyboardType.Text
+        )
+
         AppPasswordTextField(
             value = state.password,
             onValueChange = onPasswordChanged,
