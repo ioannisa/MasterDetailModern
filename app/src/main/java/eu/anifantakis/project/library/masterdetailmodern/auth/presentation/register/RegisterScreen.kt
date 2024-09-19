@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import eu.anifantakis.project.library.masterdetailmodern.R
 import eu.anifantakis.project.library.masterdetailmodern.auth.domain.UserDataValidator
@@ -65,7 +66,10 @@ fun RegisterScreenRoot(
 
     RegisterScreen(
         state = viewModel.state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        onEmailChanged = viewModel::onEmailChanged,
+        onPasswordChanged = viewModel::onPasswordChanged,
+        onUsernameChanged = viewModel::onUsernameChanged
     )
 }
 
@@ -73,6 +77,9 @@ fun RegisterScreenRoot(
 private fun RegisterScreen(
     state: RegisterState,
     onAction: (RegisterAction) -> Unit,
+    onEmailChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit
 ) {
     AppBackground{
         Column(
@@ -90,7 +97,13 @@ private fun RegisterScreen(
             Spacer(Modifier.height(UIConst.paddingDouble))
 
             // LOGIN SECTION
-            LoginSection(state, onAction)
+            LoginSection(
+                state = state,
+                onAction = onAction,
+                onEmailChanged = onEmailChanged,
+                onPasswordChanged = onPasswordChanged,
+                onUsernameChanged = onUsernameChanged
+            )
 
         }
     }
@@ -134,13 +147,17 @@ private fun Header(
 @Composable
 private fun LoginSection(
     state: RegisterState,
-    onAction: (RegisterAction) -> Unit
+    onAction: (RegisterAction) -> Unit,
+    onEmailChanged: (TextFieldValue) -> Unit,
+    onPasswordChanged: (TextFieldValue) -> Unit,
+    onUsernameChanged: (TextFieldValue) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(UIConst.padding)
     ) {
         AppTextField(
-            state = state.email,
+            value = state.email,
+            onValueChange = onEmailChanged,
             startIcon = Icons.email,
             endIcon = if (state.isEmailValid) {
                 Icons.check
@@ -152,7 +169,8 @@ private fun LoginSection(
         )
 
         AppPasswordTextField(
-            state = state.password,
+            value = state.password,
+            onValueChange = onPasswordChanged,
             isPasswordVisible = state.isPasswordVisible,
             hint = stringResource(R.string.password_hint),
             title = stringResource(R.string.password),
@@ -240,6 +258,9 @@ private fun PasswordRequirement(
 private fun RegisterScreenPreview() {
     RegisterScreen(
         state = RegisterState(),
-        onAction = {}
+        onAction = {},
+        onPasswordChanged = {},
+        onUsernameChanged = {},
+        onEmailChanged = {}
     )
 }

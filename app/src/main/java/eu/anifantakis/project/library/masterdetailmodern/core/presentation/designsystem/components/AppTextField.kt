@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.Icons
@@ -37,7 +38,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.desig
 
 @Composable
 fun AppTextField(
-    state: TextFieldState,
+    value: TextFieldValue,
     hint: String,
     title: String?,
     modifier: Modifier = Modifier,
@@ -46,6 +47,7 @@ fun AppTextField(
     error: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     additionalInfo: String? = null,
+    onValueChange: ((TextFieldValue) -> Unit)? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -79,14 +81,15 @@ fun AppTextField(
         }
 
         BasicTextField(
-            state = state,
+            value = value,
+            onValueChange = onValueChange ?: { },
             textStyle = LocalTextStyle.current.copy(
                 color = MaterialTheme.colorScheme.onBackground
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType
             ),
-            lineLimits = TextFieldLineLimits.SingleLine,
+            singleLine = true, // Use `singleLine` instead of `lineLimits`
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
             modifier = Modifier
                 .clip(RoundedCornerShape(UIConst.padding))
@@ -115,7 +118,7 @@ fun AppTextField(
                 .onFocusChanged {
                     isFocused = it.isFocused
                 },
-            decorator = { innerBox ->
+            decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -123,7 +126,7 @@ fun AppTextField(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(UIConst.paddingSmall)
                 ) {
-                    if(startIcon != null) {
+                    if (startIcon != null) {
                         Icon(
                             imageVector = startIcon,
                             contentDescription = null,
@@ -132,10 +135,9 @@ fun AppTextField(
                     }
 
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
-                        if (state.text.isEmpty() && !isFocused) {
+                        if (value.text.isEmpty() && !isFocused) {
                             Text(
                                 text = hint,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -143,10 +145,10 @@ fun AppTextField(
                             )
                         }
 
-                        innerBox()
+                        innerTextField()
                     }
 
-                    if(endIcon != null) {
+                    if (endIcon != null) {
                         Icon(
                             imageVector = endIcon,
                             contentDescription = null,
@@ -157,7 +159,6 @@ fun AppTextField(
             }
         )
     }
-
 }
 
 @Preview
@@ -169,7 +170,8 @@ private fun AppTextFieldPreview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AppTextField(
-                state = TextFieldState(),
+                value = TextFieldValue(),
+                onValueChange = {},
                 startIcon = Icons.email,
                 endIcon = Icons.check,
                 hint = "Hint 1",
@@ -179,7 +181,8 @@ private fun AppTextFieldPreview() {
             )
 
             AppTextField(
-                state = TextFieldState(),
+                value = TextFieldValue(),
+                onValueChange = {},
                 startIcon = Icons.padlock,
                 endIcon = null,
                 hint = "Hint 2",

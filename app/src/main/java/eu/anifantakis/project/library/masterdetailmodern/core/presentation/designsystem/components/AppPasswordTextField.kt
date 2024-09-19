@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicSecureTextField
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -31,6 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.anifantakis.project.library.masterdetailmodern.R
@@ -39,7 +40,8 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.desig
 
 @Composable
 fun AppPasswordTextField(
-    state: TextFieldState,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     isPasswordVisible: Boolean,
     hint: String,
     title: String?,
@@ -52,46 +54,37 @@ fun AppPasswordTextField(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(UIConst.paddingExtraSmall)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (title != null) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
+        if (title != null) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
-        BasicSecureTextField(
-            state = state,
-            textObfuscationMode = if(isPasswordVisible)
-                    TextObfuscationMode.Visible
-                else
-                    TextObfuscationMode.Hidden,
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
             textStyle = LocalTextStyle.current.copy(
                 color = MaterialTheme.colorScheme.onBackground
             ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
+            singleLine = true,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+            visualTransformation = if (isPasswordVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
             modifier = Modifier
                 .clip(RoundedCornerShape(UIConst.padding))
                 .background(
                     if (isFocused) {
-                        MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.1f
-                        )
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                     } else {
-                        MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.5f
-                        )
-                    },
-                    shape = RoundedCornerShape(UIConst.padding)
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    }
                 )
                 .border(
                     width = 1.dp,
@@ -102,11 +95,11 @@ fun AppPasswordTextField(
                     },
                     shape = RoundedCornerShape(UIConst.padding)
                 )
-                .padding(horizontal =  12.dp)
+                .padding(horizontal = 12.dp)
                 .onFocusChanged {
                     isFocused = it.isFocused
                 },
-            decorator = { innerBox ->
+            decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -114,19 +107,16 @@ fun AppPasswordTextField(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(UIConst.paddingSmall)
                 ) {
-
                     Icon(
                         imageVector = Icons.padlock,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
-                        if (state.text.isEmpty() && !isFocused) {
+                        if (value.text.isEmpty() && !isFocused) {
                             Text(
                                 text = hint,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -134,18 +124,15 @@ fun AppPasswordTextField(
                             )
                         }
 
-                        innerBox()
+                        innerTextField()
                     }
 
                     IconButton(
-                        modifier = Modifier.padding(0.dp),
                         onClick = onTogglePasswordVisibility
                     ) {
                         Icon(
-                            imageVector =
-                                if(isPasswordVisible) Icons.visibilityOff else Icons.visibilityOn,
-                            contentDescription =
-                                if(isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password),
+                            imageVector = if (isPasswordVisible) Icons.visibilityOff else Icons.visibilityOn,
+                            contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -155,25 +142,29 @@ fun AppPasswordTextField(
     }
 }
 
+
+
 @Preview
 @Composable
 private fun AppPasswordTextFieldPreview() {
     AppBackground {
 
         var isPasswordVisible by remember { mutableStateOf(false) }
+        var passwordValue by remember { mutableStateOf(TextFieldValue("")) }
 
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AppPasswordTextField(
-                state = TextFieldState(),
+                value = passwordValue,
+                onValueChange = { passwordValue = it },
                 isPasswordVisible = isPasswordVisible,
                 hint = "Enter Password here",
                 title = "Password Field",
-                modifier = Modifier.fillMaxWidth()
-            ) { isPasswordVisible = !isPasswordVisible }
-
+                modifier = Modifier.fillMaxWidth(),
+                onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible }
+            )
         }
     }
 }
