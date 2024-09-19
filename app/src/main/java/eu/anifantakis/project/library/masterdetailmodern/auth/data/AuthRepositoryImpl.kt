@@ -8,7 +8,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.Au
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataError
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.EmptyDataResult
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.asEmptyDataResult
-import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
+import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 
 class AuthRepositoryImpl(
     private val httpClient: AuthHttpClient
@@ -35,7 +35,7 @@ class AuthRepositoryImpl(
             )
         )
 
-        if (result is Result.Success) {
+        if (result is DataResult.Success) {
             httpClient.persistAuthInfo(
                 accessToken = result.data.accessToken,
                 refreshToken = result.data.refreshToken,

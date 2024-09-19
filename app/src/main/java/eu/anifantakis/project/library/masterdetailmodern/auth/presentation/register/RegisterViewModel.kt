@@ -11,7 +11,7 @@ import eu.anifantakis.project.library.masterdetailmodern.auth.domain.AuthReposit
 import eu.anifantakis.project.library.masterdetailmodern.auth.domain.PasswordValidationState
 import eu.anifantakis.project.library.masterdetailmodern.auth.domain.UserDataValidator
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataError
-import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
+import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -110,10 +110,10 @@ class RegisterViewModel(
             state = state.copy(isRegistering = false)
 
             when (result) {
-                is Result.Success -> {
+                is DataResult.Success -> {
                     eventChannel.send(RegisterEvent.RegistrationSuccess)
                 }
-                is Result.Failure -> {
+                is DataResult.Failure -> {
                     // failure could be 409 conflict, username already exists
                     // but because our dummy api supports only login we check for 401 unauthorized
 

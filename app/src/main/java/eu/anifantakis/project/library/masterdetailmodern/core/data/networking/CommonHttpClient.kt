@@ -1,7 +1,7 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataError
-import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
+import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
@@ -70,21 +70,21 @@ abstract class CommonHttpClient(
     suspend inline fun <reified Response : Any> get(
         route: String,
         queryParameters: Map<String, Any?> = mapOf()
-    ): Result<Response, DataError.Network> {
+    ): DataResult<Response, DataError.Network> {
         return client.get(route, queryParameters)
     }
 
     suspend inline fun <reified Request : Any, reified Response : Any> post(
         route: String,
         body: Request
-    ): Result<Response, DataError.Network> {
+    ): DataResult<Response, DataError.Network> {
         return client.post(route, body)
     }
 
     suspend inline fun <reified Response : Any> delete(
         route: String,
         queryParameters: Map<String, Any?> = mapOf()
-    ): Result<Response, DataError.Network> {
+    ): DataResult<Response, DataError.Network> {
         return client.delete(route, queryParameters)
     }
 }
@@ -93,7 +93,7 @@ abstract class CommonHttpClient(
 suspend inline fun <reified Response : Any> HttpClient.get(
     route: String,
     queryParameters: Map<String, Any?> = mapOf()
-): Result<Response, DataError.Network> {
+): DataResult<Response, DataError.Network> {
     return safeCall {
         this.get {
             url(route)
@@ -107,7 +107,7 @@ suspend inline fun <reified Response : Any> HttpClient.get(
 suspend inline fun <reified Request : Any, reified Response : Any> HttpClient.post(
     route: String,
     body: Request
-): Result<Response, DataError.Network> {
+): DataResult<Response, DataError.Network> {
     return safeCall {
         this.post {
             url(route)
@@ -119,7 +119,7 @@ suspend inline fun <reified Request : Any, reified Response : Any> HttpClient.po
 suspend inline fun <reified Response : Any> HttpClient.delete(
     route: String,
     queryParameters: Map<String, Any?> = mapOf()
-): Result<Response, DataError.Network> {
+): DataResult<Response, DataError.Network> {
     return safeCall {
         this.delete {
             url(route)
@@ -131,31 +131,31 @@ suspend inline fun <reified Response : Any> HttpClient.delete(
 }
 
 // Error handling methods
-suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): Result<T, DataError.Network> {
+suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): DataResult<T, DataError.Network> {
     return try {
         responseToResult(execute())
     } catch (e: UnresolvedAddressException) {
         e.printStackTrace()
-        Result.Failure(DataError.Network.NO_INTERNET)
+        DataResult.Failure(DataError.Network.NO_INTERNET)
     } catch (e: SerializationException) {
         e.printStackTrace()
-        Result.Failure(DataError.Network.SERIALIZATION)
+        DataResult.Failure(DataError.Network.SERIALIZATION)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         e.printStackTrace()
-        Result.Failure(DataError.Network.UNKNOWN)
+        DataResult.Failure(DataError.Network.UNKNOWN)
     }
 }
 
-suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<T, DataError.Network> {
+suspend inline fun <reified T> responseToResult(response: HttpResponse): DataResult<T, DataError.Network> {
     return when (response.status.value) {
-        in 200..299 -> Result.Success(response.body())
-        401 -> Result.Failure(DataError.Network.UNAUTHORIZED)
-        408 -> Result.Failure(DataError.Network.REQUEST_TIMEOUT)
-        409 -> Result.Failure(DataError.Network.CONFLICT)
-        413 -> Result.Failure(DataError.Network.PAYLOAD_TOO_LARGE)
-        429 -> Result.Failure(DataError.Network.TOO_MANY_REQUESTS)
-        in 500..599 -> Result.Failure(DataError.Network.SERVER_ERROR)
-        else -> Result.Failure(DataError.Network.UNKNOWN)
+        in 200..299 -> DataResult.Success(response.body())
+        401 -> DataResult.Failure(DataError.Network.UNAUTHORIZED)
+        408 -> DataResult.Failure(DataError.Network.REQUEST_TIMEOUT)
+        409 -> DataResult.Failure(DataError.Network.CONFLICT)
+        413 -> DataResult.Failure(DataError.Network.PAYLOAD_TOO_LARGE)
+        429 -> DataResult.Failure(DataError.Network.TOO_MANY_REQUESTS)
+        in 500..599 -> DataResult.Failure(DataError.Network.SERVER_ERROR)
+        else -> DataResult.Failure(DataError.Network.UNKNOWN)
     }
 }

@@ -12,7 +12,7 @@ import eu.anifantakis.project.library.masterdetailmodern.auth.domain.PasswordVal
 import eu.anifantakis.project.library.masterdetailmodern.auth.domain.UserDataValidator
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataError
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.UiText
-import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
+import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.asUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -92,7 +92,7 @@ class LoginViewModel(
             state = state.copy(isLoggingIn = false)
 
             when(result) {
-                is Result.Failure -> {
+                is DataResult.Failure -> {
                     if(result.error == DataError.Network.UNAUTHORIZED) {
                         eventChannel.send(LoginEvent.Error(
                             UiText.StringResource(R.string.error_username_password_incorrect)
@@ -102,7 +102,7 @@ class LoginViewModel(
                     }
                 }
 
-                is Result.Success -> {
+                is DataResult.Success -> {
                     eventChannel.send(LoginEvent.LoginSuccess)
                 }
             }

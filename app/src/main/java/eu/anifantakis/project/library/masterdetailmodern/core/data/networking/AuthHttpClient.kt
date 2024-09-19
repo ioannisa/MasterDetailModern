@@ -1,7 +1,7 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
 import eu.anifantakis.lib.securepersist.PersistManager
-import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
+import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -39,13 +39,13 @@ class AuthHttpClient(
                         )
 
                         when (response) {
-                            is Result.Success -> {
+                            is DataResult.Success -> {
                                 persistAuthInfo(
                                     accessToken = response.data.token,
                                     refreshToken = response.data.refreshToken
                                 )
                             }
-                            is Result.Failure -> {
+                            is DataResult.Failure -> {
                                 persistAuthInfo("", "", 0)
                             }
                         }
