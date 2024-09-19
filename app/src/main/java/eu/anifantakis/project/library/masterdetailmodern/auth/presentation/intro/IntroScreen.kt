@@ -12,11 +12,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import eu.anifantakis.lib.securepersist.PersistManager
+import eu.anifantakis.project.library.masterdetailmodern.BuildConfig
 import eu.anifantakis.project.library.masterdetailmodern.R
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.Icons
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.UIConst
@@ -24,6 +28,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.desig
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppOutlinedActionButton
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTypography
+import timber.log.Timber
 
 @Composable
 fun IntroScreenRoot(
@@ -44,6 +49,20 @@ fun IntroScreenRoot(
 fun IntroScreen(
     onAction: (IntroAction) -> Unit
 ) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+
+        val pm = PersistManager(context, "${BuildConfig.APPLICATION_ID}.securedPersistence")
+        var accessToken by pm.preference("")
+        var refreshToken by pm.preference("")
+        var userId by pm.preference(0)
+
+
+        Timber.tag("PERSISTENCE").d(
+            "accessToken:${accessToken}, refreshToken:${refreshToken}, userId:${userId}"
+        )
+    }
+
     AppBackground {
         Box(
             modifier = Modifier
@@ -84,7 +103,7 @@ fun IntroScreen(
             AppOutlinedActionButton(
                 text = "Sign In",
                 isLoading = false,
-                onClick = { onAction(IntroAction.OnSignUpClick) }
+                onClick = { onAction(IntroAction.OnSignInClick) }
             )
         }
     }

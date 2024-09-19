@@ -131,7 +131,7 @@ fun AppPasswordTextField(
                         onClick = onTogglePasswordVisibility
                     ) {
                         Icon(
-                            imageVector = if (isPasswordVisible) Icons.visibilityOff else Icons.visibilityOn,
+                            imageVector = if (isPasswordVisible) Icons.visibilityOn else Icons.visibilityOff,
                             contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )

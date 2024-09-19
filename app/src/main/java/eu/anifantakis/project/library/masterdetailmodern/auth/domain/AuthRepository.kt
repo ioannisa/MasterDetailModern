@@ -7,4 +7,6 @@ interface AuthRepository {
 
     suspend fun register(username: String, password: String): EmptyDataResult<DataError.Network>
 
+    suspend fun login(username: String, password: String): EmptyDataResult<DataError.Network>
+
 }

@@ -1,22 +1,20 @@
 package eu.anifantakis.project.library.masterdetailmodern.auth.presentation
 
-import androidx.compose.material3.Text
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.intro.IntroScreenRoot
+import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.login.LoginScreenRoot
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.register.RegisterScreenRoot
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.NavTree
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesNavTree
 import kotlinx.serialization.Serializable
 
 sealed interface AuthNavTree {
-    @Serializable
-    data object Intro: AuthNavTree
-    @Serializable
-    data object Register: AuthNavTree
-    @Serializable
-    data object Login: AuthNavTree
+    @Serializable data object Intro: AuthNavTree
+    @Serializable data object Register: AuthNavTree
+    @Serializable data object Login: AuthNavTree
 }
 
 fun NavGraphBuilder.authGraph(navController: NavHostController) {
@@ -48,7 +46,26 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
         }
 
         composable<AuthNavTree.Login> {
-            Text("Login Screen")
+            LoginScreenRoot(
+                onLoginSuccess = {
+                    navController.navigate(MoviesNavTree.MoviesList) {
+                        popUpTo(AuthNavTree.Intro) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                },
+                onSignupClick = {
+                    navController.navigate(AuthNavTree.Login) {
+                        popUpTo(AuthNavTree.Login) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }

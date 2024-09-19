@@ -26,6 +26,7 @@ sealed interface RegisterAction {
 sealed interface RegisterEvent {
     data object RegistrationSuccess: RegisterEvent
     data class Error(val error: UiText): RegisterEvent
+    data object GotoLogin: RegisterEvent
 }
 
 data class RegisterState(
@@ -90,7 +91,9 @@ class RegisterViewModel(
             }
 
             is RegisterAction.OnLoginClick -> {
-
+                viewModelScope.launch {
+                    eventChannel.send(RegisterEvent.GotoLogin)
+                }
             }
         }
     }

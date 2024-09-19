@@ -2,8 +2,6 @@ package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
 import eu.anifantakis.lib.securepersist.PersistManager
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.Result
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -13,49 +11,72 @@ class AuthHttpClient(
     tag: String,
     baseUrl: String,
     apiKey: String? = null,
-    persistManager: PersistManager,
-    authConfig: HttpClientConfig<CIOEngineConfig>.() -> Unit = {
+    persistManager: PersistManager
+) : CommonHttpClient(tag, baseUrl, apiKey, null) {
 
-        // https://dummyjson.com/docs/auth
-        install(Auth) {
-            bearer {
-                var accessToken by persistManager.preference("")
-                var refreshToken by persistManager.preference("")
+    private var accessToken by persistManager.preference("")
+    private var refreshToken by persistManager.preference("")
+    private var userId by persistManager.preference(0)
 
-                // Default bearer token configuration
-                loadTokens {
-                    BearerTokens(
-                        accessToken = accessToken,
-                        refreshToken = refreshToken
-                    )
-                }
-
-                refreshTokens {
-                    val response = client.post<AccessTokenRequest, AccessTokenResponse>(
-                        route = "/auth/refresh",
-                        body = AccessTokenRequest(
-                            refreshToken = "",
-                            expiresInMins = 1
+    init {
+        client.config {
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        BearerTokens(
+                            accessToken = accessToken,
+                            refreshToken = refreshToken
                         )
-                    )
-
-                    if (response is Result.Success) {
-                        accessToken = response.data.token
-                        refreshToken = response.data.refreshToken
-                    } else {
-                        accessToken = ""
-                        refreshToken = ""
                     }
 
-                    BearerTokens(
-                        accessToken = accessToken,
-                        refreshToken = refreshToken
-                    )
+                    refreshTokens {
+                        val response = post<AccessTokenRequest, AccessTokenResponse>(
+                            route = "/auth/refresh",
+                            body = AccessTokenRequest(
+                                refreshToken = refreshToken,
+                                expiresInMins = 1
+                            )
+                        )
+
+                        when (response) {
+                            is Result.Success -> {
+                                persistAuthInfo(
+                                    accessToken = response.data.token,
+                                    refreshToken = response.data.refreshToken
+                                )
+                            }
+                            is Result.Failure -> {
+                                persistAuthInfo("", "", 0)
+                            }
+                        }
+
+                        BearerTokens(
+                            accessToken = accessToken,
+                            refreshToken = refreshToken
+                        )
+                    }
                 }
             }
         }
     }
-) : CommonHttpClient(tag, baseUrl, apiKey, authConfig) {
+
+    fun persistAuthInfo(accessToken: String, refreshToken: String, userId: Int? = null) {
+        this.accessToken = accessToken
+        this.refreshToken = refreshToken
+        if (userId != null) {
+            this.userId = userId
+        }
+    }
+
+    fun loadAuthInfo(): AuthInfo {
+        return AuthInfo(accessToken, refreshToken, userId)
+    }
+
+    data class AuthInfo(
+        val accessToken: String,
+        val refreshToken: String,
+        val userId: Int
+    )
 
     @Serializable
     private data class AccessTokenRequest(

@@ -26,4 +26,9 @@
     <string name="register">Register</string>
     <string name="error_email_exists">This email already exists</string>
     <string name="username">username</string>
+    <string name="hi_there">Hi There!</string>
+    <string name="app_welcome_text">Welcome to the Modern Demo App.  This is the login page to the dummyjson.com users</string>
+    <string name="login">Login</string>
+    <string name="login_success">Login successful</string>
+    <string name="error_username_password_incorrect">Username or Password don\'t match</string>
 </resources>

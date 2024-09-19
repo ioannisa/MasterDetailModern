@@ -48,18 +48,23 @@ fun RegisterScreenRoot(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     ObserveAsEvents(viewModel.events) { event ->
+        keyboardController?.hide()
+
         when (event) {
             is RegisterEvent.Error -> {
-                keyboardController?.hide()
                 Toast.makeText(
                     context,
                     event.error.asString(context),
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
-            RegisterEvent.RegistrationSuccess -> {
-                keyboardController?.hide()
+
+            is RegisterEvent.RegistrationSuccess -> {
                 onSuccessfulRegistration()
+            }
+
+            is RegisterEvent.GotoLogin -> {
+                onSignInClick()
             }
         }
     }
@@ -224,7 +229,7 @@ private fun LoginSection(
         AppActionButton(
             text = stringResource(R.string.register),
             isLoading = state.isRegistering,
-            enabled = state.canRegister,
+            //enabled = state.canRegister,
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 onAction(
