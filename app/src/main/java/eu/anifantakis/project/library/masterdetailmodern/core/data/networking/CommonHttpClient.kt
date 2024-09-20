@@ -33,10 +33,10 @@ import kotlin.coroutines.cancellation.CancellationException
 abstract class CommonHttpClient(
     open val tag: String,
     open val baseUrl: String,
-    open val apiKey: String? = null,
-    private val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = null
+    var additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = null
 ) {
-    val client: HttpClient = HttpClient(CIO) {
+
+    private val clientConfig: HttpClientConfig<CIOEngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -54,9 +54,6 @@ abstract class CommonHttpClient(
 
         defaultRequest {
             contentType(ContentType.Application.Json)
-            if (apiKey != null) {
-                header("x-api-key", apiKey)
-            }
             url {
                 takeFrom(baseUrl)
             }
@@ -64,6 +61,10 @@ abstract class CommonHttpClient(
 
         // Apply additional configuration if provided
         additionalConfig?.invoke(this)
+    }
+
+    val client: HttpClient by lazy {
+        HttpClient(CIO, clientConfig)
     }
 
     // Networking methods

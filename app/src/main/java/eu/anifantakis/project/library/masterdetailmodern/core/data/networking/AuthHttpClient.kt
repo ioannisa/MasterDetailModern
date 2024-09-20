@@ -5,6 +5,10 @@ import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataRe
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.header
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 class AuthHttpClient(
@@ -12,14 +16,14 @@ class AuthHttpClient(
     baseUrl: String,
     apiKey: String? = null,
     persistManager: PersistManager
-) : CommonHttpClient(tag, baseUrl, apiKey, null) {
+) : CommonHttpClient(tag, baseUrl, null) {
 
     private var accessToken by persistManager.preference("")
     private var refreshToken by persistManager.preference("")
     private var userId by persistManager.preference(0)
 
     init {
-        client.config {
+        additionalConfig = {
             install(Auth) {
                 bearer {
                     loadTokens {
