@@ -11,14 +11,10 @@ import io.ktor.http.takeFrom
 class MoviesHttpClient(
     tag: String,
     baseUrl: String,
-    apiKey: String? = null,
-) : CommonHttpClient(
-    tag = tag,
-    baseUrl = baseUrl,
+    private val apiKey: String? = null
+) : CommonHttpClient(tag, baseUrl) {
 
-    additionalConfig = {
-
-        // additional configuration with api key as param
+    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = {
         defaultRequest {
             contentType(ContentType.Application.Json)
             url {
@@ -29,8 +25,7 @@ class MoviesHttpClient(
             }
         }
 
-
-        // additional configuration with api key as header param
+        // Or if you prefer headers
         defaultRequest {
             contentType(ContentType.Application.Json)
             if (apiKey != null) {
@@ -41,5 +36,4 @@ class MoviesHttpClient(
             }
         }
     }
-
-)
+}

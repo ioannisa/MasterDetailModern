@@ -14,7 +14,6 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -32,39 +31,38 @@ import kotlin.coroutines.cancellation.CancellationException
 
 abstract class CommonHttpClient(
     open val tag: String,
-    open val baseUrl: String,
-    var additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = null
+    open val baseUrl: String
 ) {
-
-    private val clientConfig: HttpClientConfig<CIOEngineConfig>.() -> Unit = {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
-        }
-
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Timber.tag("$tag Http Client").d(message)
-                }
-            }
-            level = LogLevel.ALL
-        }
-
-        defaultRequest {
-            contentType(ContentType.Application.Json)
-            url {
-                takeFrom(baseUrl)
-            }
-        }
-
-        // Apply additional configuration if provided
-        additionalConfig?.invoke(this)
-    }
+    open val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = null
 
     val client: HttpClient by lazy {
-        HttpClient(CIO, clientConfig)
+        HttpClient(CIO) {
+            // Install standard plugins
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                })
+            }
+
+            install(Logging) {
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Timber.tag("$tag Http Client").d(message)
+                    }
+                }
+                level = LogLevel.ALL
+            }
+
+            defaultRequest {
+                contentType(ContentType.Application.Json)
+                url {
+                    takeFrom(baseUrl)
+                }
+            }
+
+            // Apply additional configuration if provided
+            additionalConfig?.invoke(this)
+        }
     }
 
     // Networking methods
@@ -159,4 +157,15 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): DataRes
         in 500..599 -> DataResult.Failure(DataError.Network.SERVER_ERROR)
         else -> DataResult.Failure(DataError.Network.UNKNOWN)
     }
+}
+
+abstract class CommonHttpClientWithAdditionalConfig(
+    tag: String,
+    baseUrl: String,
+    private val additionalConfigProvider: (() -> (HttpClientConfig<CIOEngineConfig>.() -> Unit)?)? = null
+) : CommonHttpClient(tag, baseUrl) {
+
+    // Override additionalConfig to invoke the provider when accessed
+    final override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)?
+        get() = additionalConfigProvider?.invoke()
 }
