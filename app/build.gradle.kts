@@ -126,12 +126,12 @@ dependencies {
 
 private fun BuildType.configureDebugBuildType(apiKey: String) {
     buildConfigField("String", "API_KEY_MOVIES", "\"$apiKey\"")
-    buildConfigField("String", "BASE_URL_MOVIES", "\"https://themoviedb.org\"")
+    buildConfigField("String", "BASE_URL_MOVIES", "\"https://api.themoviedb.org\"")
     buildConfigField("String", "BASE_URL_AUTH", "\"https://dummyjson.com\"")
 }
 
 private fun BuildType.configureReleaseBuildType(apiKey: String) {
     buildConfigField("String", "API_KEY_MOVIES", "\"$apiKey\"")
-    buildConfigField("String", "BASE_URL_MOVIES", "\"https://themoviedb.org\"")
+    buildConfigField("String", "BASE_URL_MOVIES", "\"https://api.themoviedb.org\"")
     buildConfigField("String", "BASE_URL_AUTH", "\"https://dummyjson.com\"")
 }

@@ -19,7 +19,7 @@ class AuthHttpClient(
     private var refreshToken by persistManager.preference("")
     private var userId by persistManager.preference(0)
 
-    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = {
+    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
         install(Auth) {
             bearer {
                 loadTokens {
