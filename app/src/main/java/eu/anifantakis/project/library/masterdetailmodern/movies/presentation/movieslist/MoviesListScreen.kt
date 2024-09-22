@@ -32,9 +32,11 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.Ob
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun MoviesListScreenRoot(
+    onNavigateToMovieDetails: (Int) -> Unit,
     viewModel: MoviesListViewModel = koinViewModel()
 ) {
     ObserveAsEvents(viewModel.events) { event ->
@@ -43,7 +45,17 @@ fun MoviesListScreenRoot(
 
     MoviesListScreen(
         state = viewModel.state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                is MoviesListAction.SelectMovie -> {
+                    Timber.tag("THIS_IS_IS").d("MovieId -> ${action.movieId}")
+                    onNavigateToMovieDetails(action.movieId)
+                }
+                else -> {
+                    viewModel.onAction(action)
+                }
+            }
+        },
     )
 }
 
@@ -68,7 +80,7 @@ private fun MoviesListScreen(
                         movie = movie,
                         modifier = Modifier
                             .clickable {
-
+                                onAction(MoviesListAction.SelectMovie(movie.id))
                             }
                     )
                 }
