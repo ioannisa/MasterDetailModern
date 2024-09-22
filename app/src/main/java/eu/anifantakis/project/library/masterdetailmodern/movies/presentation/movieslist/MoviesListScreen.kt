@@ -56,11 +56,10 @@ private fun MoviesListScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(UIConst.padding)
-                .padding(bottom = 48.dp),
+                .padding(UIConst.padding),
             verticalArrangement = Arrangement.spacedBy(UIConst.paddingSmall)
         ) {
-            LazyColumn() {
+            LazyColumn {
                 items(
                     items = state.movies,
                     key = { it.id }
@@ -80,11 +79,9 @@ private fun MoviesListScreen(
 
 @Composable
 fun RowItem(movie: Movie, modifier: Modifier = Modifier) {
-    Text(movie.title)
-
     Card(
         modifier = modifier.
-        padding(horizontal = 16.dp, vertical = 4.dp)
+        padding(vertical = 4.dp)
     ) {
         Row {
             ThumbnailLoader(imagePath = movie.posterPath)
