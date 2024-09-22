@@ -11,7 +11,7 @@ data class LoginRequest(
 
 @Serializable
 data class LoginResponse(
-    @SerialName("token")
+    @SerialName("accessToken")
     val accessToken: String,
     val refreshToken: String,
     @SerialName("id")
