@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.core.data.di
+package eu.anifantakis.project.library.masterdetailmodern.di.core
 
 import eu.anifantakis.project.library.masterdetailmodern.BuildConfig
 import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.AuthHttpClient

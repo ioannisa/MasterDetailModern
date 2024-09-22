@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.movies.data.di
+package eu.anifantakis.project.library.masterdetailmodern.di.movies
 
 import eu.anifantakis.project.library.masterdetailmodern.movies.data.MoviesRepositoryImpl
 import eu.anifantakis.project.library.masterdetailmodern.movies.data.datasource.LocalMoviesDataSourceImpl

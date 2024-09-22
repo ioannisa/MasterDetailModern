@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.movies.presentation.di
+package eu.anifantakis.project.library.masterdetailmodern.di.movies
 
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.movieslist.MoviesListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf

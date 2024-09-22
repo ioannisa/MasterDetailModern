@@ -1,13 +1,13 @@
 package eu.anifantakis.project.library.masterdetailmodern
 
 import android.app.Application
-import eu.anifantakis.project.library.masterdetailmodern.auth.data.di.authDataModule
-import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.di.authViewModelModule
-import eu.anifantakis.project.library.masterdetailmodern.core.data.di.appModule
+import eu.anifantakis.project.library.masterdetailmodern.di.auth.authDataModule
+import eu.anifantakis.project.library.masterdetailmodern.di.auth.authViewModelModule
+import eu.anifantakis.project.library.masterdetailmodern.di.core.appModule
 import eu.anifantakis.project.library.masterdetailmodern.database.dbModule
-import eu.anifantakis.project.library.masterdetailmodern.core.data.di.networkModule
-import eu.anifantakis.project.library.masterdetailmodern.movies.data.di.moviesDataModule
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.di.moviesViewModule
+import eu.anifantakis.project.library.masterdetailmodern.di.core.networkModule
+import eu.anifantakis.project.library.masterdetailmodern.di.movies.moviesDataModule
+import eu.anifantakis.project.library.masterdetailmodern.di.movies.moviesViewModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext

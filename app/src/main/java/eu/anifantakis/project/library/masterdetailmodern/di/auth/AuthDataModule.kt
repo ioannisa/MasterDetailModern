@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.auth.data.di
+package eu.anifantakis.project.library.masterdetailmodern.di.auth
 
 import eu.anifantakis.project.library.masterdetailmodern.auth.data.AuthRepositoryImpl
 import eu.anifantakis.project.library.masterdetailmodern.auth.data.EmailPatternValidator

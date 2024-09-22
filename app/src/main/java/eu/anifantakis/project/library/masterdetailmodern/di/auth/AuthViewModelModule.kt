@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.auth.presentation.di
+package eu.anifantakis.project.library.masterdetailmodern.di.auth
 
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.login.LoginViewModel
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.register.RegisterViewModel
