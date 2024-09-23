@@ -1,6 +1,5 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.presentation
 
-import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.authGraph
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.moviesGraph
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
+
 
 sealed interface NavGraph {
     @Serializable data object Auth: NavGraph
@@ -32,12 +31,3 @@ fun NavigationRoot(
     }
 }
 
-inline fun <reified T : Any> NavHostController.popAndNavigate(popTo: T, navigate: T) {
-    this.navigate(navigate) {
-        popUpTo(popTo) {
-            inclusive = true
-            saveState = true
-        }
-        restoreState = true
-    }
-}

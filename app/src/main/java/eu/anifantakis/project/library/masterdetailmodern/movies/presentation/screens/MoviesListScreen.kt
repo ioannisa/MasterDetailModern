@@ -1,4 +1,4 @@
-package eu.anifantakis.project.library.masterdetailmodern.movies.presentation.movieslist
+package eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,32 +30,31 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.desig
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveAsEvents
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListAction
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListEvent
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListState
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesViewModel
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
-import timber.log.Timber
 
 @Composable
 fun MoviesListScreenRoot(
     onNavigateToMovieDetails: (Int) -> Unit,
-    viewModel: MoviesListViewModel = koinViewModel()
+    viewModel: MoviesViewModel = koinViewModel()
 ) {
     ObserveAsEvents(viewModel.events) { event ->
-
+        when (event) {
+            is MoviesListEvent.GotoMovieDetails -> {
+                if (event.movieId > 0)
+                    onNavigateToMovieDetails(event.movieId)
+            }
+            else -> { }
+        }
     }
 
     MoviesListScreen(
         state = viewModel.state,
-        onAction = { action ->
-            when (action) {
-                is MoviesListAction.SelectMovie -> {
-                    Timber.tag("THIS_IS_IS").d("MovieId -> ${action.movieId}")
-                    onNavigateToMovieDetails(action.movieId)
-                }
-                else -> {
-                    viewModel.onAction(action)
-                }
-            }
-        },
+        onAction = viewModel::onAction
     )
 }
 

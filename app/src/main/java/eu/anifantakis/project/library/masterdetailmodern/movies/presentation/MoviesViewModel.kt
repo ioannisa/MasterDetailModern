@@ -1,17 +1,21 @@
-package eu.anifantakis.project.library.masterdetailmodern.movies.presentation.movieslist
+package eu.anifantakis.project.library.masterdetailmodern.movies.presentation
 
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.UiText
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.MoviesRepository
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed interface MoviesListAction {
     object LoadMovies : MoviesListAction
@@ -19,8 +23,9 @@ sealed interface MoviesListAction {
 }
 
 sealed interface MoviesListEvent {
-    object MoviesListSuccess : MoviesListEvent
+    data object MoviesListSuccess : MoviesListEvent
     data class Error(val error: UiText) : MoviesListEvent
+    data class GotoMovieDetails(val movieId: Int) : MoviesListEvent
 }
 
 data class MoviesListState(
@@ -29,7 +34,7 @@ data class MoviesListState(
     val selectedMovie: Movie? = null,
 )
 
-class MoviesListViewModel(
+class MoviesViewModel(
     private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
@@ -41,6 +46,12 @@ class MoviesListViewModel(
 
     init {
         loadMovies()
+
+        snapshotFlow { state.selectedMovie }
+            .map { movie ->
+                eventChannel.send(MoviesListEvent.GotoMovieDetails(movie?.id ?: -1))
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onAction(action: MoviesListAction) {
@@ -58,16 +69,11 @@ class MoviesListViewModel(
                     state = state.copy(movies = it)
                 }
             state = state.copy(isLoading = false)
-
-
-
         }
 
         viewModelScope.launch {
             moviesRepository.fetchMovies()
-
         }
-
     }
 
     private fun selectMovie(movieId: Int) {

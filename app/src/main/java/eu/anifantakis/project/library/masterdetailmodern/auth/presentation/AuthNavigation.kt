@@ -8,7 +8,7 @@ import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.intro
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.login.LoginScreenRoot
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.register.RegisterScreenRoot
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.NavGraph
-import eu.anifantakis.project.library.masterdetailmodern.core.presentation.popAndNavigate
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.popAndNavigate
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesNavType
 import kotlinx.serialization.Serializable
 
