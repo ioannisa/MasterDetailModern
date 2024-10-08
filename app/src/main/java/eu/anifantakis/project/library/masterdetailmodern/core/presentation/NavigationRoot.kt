@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import eu.anifantakis.project.library.masterdetailmodern.auth.presentation.authGraph
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.scaffold.ApplicationScaffold
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.moviesGraph
 import kotlinx.serialization.Serializable
 
@@ -22,12 +23,15 @@ fun NavigationRoot(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = if (!isLoggedIn) NavGraph.Auth else NavGraph.Movies
-    ) {
-        authGraph(navController)
-        moviesGraph(navController)
+    ApplicationScaffold(navController = navController) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = if (!isLoggedIn) NavGraph.Auth else NavGraph.Movies
+        ) {
+
+            authGraph(navController)
+            moviesGraph(navController, paddingValues)
+        }
     }
 }
 

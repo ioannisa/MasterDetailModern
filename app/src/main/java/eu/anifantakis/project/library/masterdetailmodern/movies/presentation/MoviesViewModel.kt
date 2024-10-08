@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.UiText
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.businesslogic.BaseViewModel
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.MoviesRepository
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 sealed interface MoviesListAction {
     object LoadMovies : MoviesListAction
@@ -36,7 +35,7 @@ data class MoviesListState(
 
 class MoviesViewModel(
     private val moviesRepository: MoviesRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     var state by mutableStateOf(MoviesListState())
         private set

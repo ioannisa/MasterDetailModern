@@ -4,6 +4,8 @@ import eu.anifantakis.lib.securepersist.PersistManager
 import eu.anifantakis.project.library.masterdetailmodern.AppApplication
 import eu.anifantakis.project.library.masterdetailmodern.BuildConfig
 import eu.anifantakis.project.library.masterdetailmodern.MainViewModel
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.businesslogic.ObservableLoadingInteger
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.scaffold.ScaffoldViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -15,6 +17,9 @@ val appModule = module {
         PersistManager(androidContext(), "${BuildConfig.APPLICATION_ID}.securedPersistence")
     }
     viewModelOf(::MainViewModel)
+
+    viewModelOf(::ScaffoldViewModel)
+    single { ObservableLoadingInteger() }
 
     single<CoroutineScope> {
         (androidApplication() as AppApplication).applicationScope

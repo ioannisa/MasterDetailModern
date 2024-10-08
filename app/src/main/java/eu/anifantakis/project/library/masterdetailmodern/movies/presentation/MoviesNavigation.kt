@@ -1,5 +1,6 @@
 package eu.anifantakis.project.library.masterdetailmodern.movies.presentation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -10,7 +11,6 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.sh
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MovieDetailsScreen
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MoviesListScreenRoot
 import kotlinx.serialization.Serializable
-import timber.log.Timber
 
 @Serializable
 sealed interface MoviesNavType {
@@ -21,13 +21,14 @@ sealed interface MoviesNavType {
     data class MovieDetail(val movieId: Int): MoviesNavType
 }
 
-fun NavGraphBuilder.moviesGraph(navController: NavHostController) {
+fun NavGraphBuilder.moviesGraph(navController: NavHostController, paddingValues: PaddingValues) {
     navigation<NavGraph.Movies>(
         startDestination = MoviesNavType.MoviesList,
     ) {
         composable<MoviesNavType.MoviesList> {
             val viewModel = it.sharedViewModel<MoviesViewModel>(navController)
             MoviesListScreenRoot(
+                paddingValues = paddingValues,
                 onNavigateToMovieDetails = { movieId ->
                     navController.navigate(MoviesNavType.MovieDetail(movieId))
                 },
@@ -44,6 +45,7 @@ fun NavGraphBuilder.moviesGraph(navController: NavHostController) {
             val viewModel = it.sharedViewModel<MoviesViewModel>(navController)
 
             MovieDetailsScreen(
+                paddingValues = paddingValues,
                 vieModel = viewModel
             )
         }

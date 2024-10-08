@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -29,6 +34,10 @@ import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.year
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.UIConst
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveAsEvents
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.LifecycleConfig
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.PullToRefreshList
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ScreenWithLoadingIndicator
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.TopAppBarConfig
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListAction
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListEvent
@@ -39,6 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MoviesListScreenRoot(
+    paddingValues: PaddingValues,
     onNavigateToMovieDetails: (Int) -> Unit,
     viewModel: MoviesViewModel = koinViewModel()
 ) {
@@ -52,10 +62,22 @@ fun MoviesListScreenRoot(
         }
     }
 
-    MoviesListScreen(
-        state = viewModel.state,
-        onAction = viewModel::onAction
-    )
+    ScreenWithLoadingIndicator(
+        topAppBarConfig = TopAppBarConfig(
+            title = "Article Details",
+            onBackPress = {  }
+        ),
+        lifecycleConfig = LifecycleConfig(
+            onStart = {  }
+        ),
+        paddingValues = paddingValues,
+    ) {
+
+        MoviesListScreen(
+            state = viewModel.state,
+            onAction = viewModel::onAction
+        )
+    }
 }
 
 @Composable
@@ -70,18 +92,24 @@ private fun MoviesListScreen(
                 .padding(UIConst.padding),
             verticalArrangement = Arrangement.spacedBy(UIConst.paddingSmall)
         ) {
-            LazyColumn {
-                items(
-                    items = state.movies,
-                    key = { it.id }
-                ) { movie ->
-                    RowItem(
-                        movie = movie,
-                        modifier = Modifier
-                            .clickable {
-                                onAction(MoviesListAction.SelectMovie(movie.id))
-                            }
-                    )
+            var isRefeshing by remember { mutableStateOf(false) }
+
+            PullToRefreshList(isRefreshing = isRefeshing, onRefresh = {
+                isRefeshing = true
+            }) {
+                LazyColumn {
+                    items(
+                        items = state.movies,
+                        key = { it.id }
+                    ) { movie ->
+                        RowItem(
+                            movie = movie,
+                            modifier = Modifier
+                                .clickable {
+                                    onAction(MoviesListAction.SelectMovie(movie.id))
+                                }
+                        )
+                    }
                 }
             }
         }
