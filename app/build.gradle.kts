@@ -13,12 +13,12 @@ plugins {
 
 android {
     namespace = "eu.anifantakis.project.library.masterdetailmodern"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "eu.anifantakis.project.library.masterdetailmodern"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.timber)
 
     // Google Fonts
+    // https://developer.android.com/develop/ui/compose/text/fonts#use-downloadable-fonts
     implementation(libs.androidx.ui.text.google.fonts)
 
     // Secured Android Persistence
