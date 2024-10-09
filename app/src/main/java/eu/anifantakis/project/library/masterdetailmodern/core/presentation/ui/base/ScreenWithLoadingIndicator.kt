@@ -33,7 +33,7 @@ fun ScreenWithLoadingIndicator (
     lifecycleConfig: LifecycleConfig,
 
     scaffoldViewModel: ScaffoldViewModel = koinViewModel(),
-    paddingValues: PaddingValues,
+    paddingValues: PaddingValues? = null,
     extraPaddings: ExtraPaddings = ExtraPaddings(),
 
     content: @Composable () -> Unit
@@ -60,14 +60,18 @@ fun ScreenWithLoadingIndicator (
         )
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(
-            top = paddingValues.calculateTopPadding() + extraPaddings.top,
-            start = paddingValues.calculateStartPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.start,
-            end = paddingValues.calculateEndPadding(layoutDirection = LocalLayoutDirection.current) + extraPaddings.end,
-            bottom = paddingValues.calculateBottomPadding() + extraPaddings.bottom
-        )) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                PaddingValues(
+                    top = (paddingValues?.calculateTopPadding() ?: 0.dp) + extraPaddings.top,
+                    start = (paddingValues?.calculateStartPadding(LocalLayoutDirection.current) ?: 0.dp) + extraPaddings.start,
+                    end = (paddingValues?.calculateEndPadding(LocalLayoutDirection.current) ?: 0.dp) + extraPaddings.end,
+                    bottom = (paddingValues?.calculateBottomPadding() ?: 0.dp) + extraPaddings.bottom
+                )
+            )
+    ) {
         Column {
             //MyTopAppBar(title = topAppBarTitle, onBackPress = topAppBarOnBackPress)
             content()

@@ -34,6 +34,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.year
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.UIConst
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveAsEvents
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ExtraPaddings
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.LifecycleConfig
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.PullToRefreshList
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ScreenWithLoadingIndicator
@@ -70,7 +71,8 @@ fun MoviesListScreenRoot(
         lifecycleConfig = LifecycleConfig(
             onStart = {  }
         ),
-        paddingValues = paddingValues,
+        //paddingValues = paddingValues,
+        extraPaddings = ExtraPaddings(top = paddingValues.calculateTopPadding())
     ) {
 
         MoviesListScreen(
