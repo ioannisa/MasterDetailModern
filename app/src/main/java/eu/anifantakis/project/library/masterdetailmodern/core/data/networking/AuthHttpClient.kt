@@ -8,6 +8,7 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 class AuthHttpClient(
     tag: String,
@@ -59,9 +60,9 @@ class AuthHttpClient(
     }
 
     fun persistAuthInfo(accessToken: String, refreshToken: String, userId: Int? = null) {
-
-        // as simple as that, just change the value of your object and it gets encrypted and saved
-        this.authInfo = authInfo.copy(
+        // as simple as that,
+        // just change the value of your object and it gets encrypted and saved to SharedPreferences
+        this.authInfo = AuthInfo(
             accessToken = accessToken,
             refreshToken = refreshToken,
             userId = userId ?: this.authInfo.userId
@@ -69,6 +70,9 @@ class AuthHttpClient(
     }
 
     fun loadAuthInfo(): AuthInfo {
+        // as simple as that,
+        // just refer to the authInfo and it will automatically get decrypted and returned from SharedPreferences
+        Timber.tag("AuthInfo").d("AuthInfo: GET -> $authInfo")
         return authInfo
     }
 
