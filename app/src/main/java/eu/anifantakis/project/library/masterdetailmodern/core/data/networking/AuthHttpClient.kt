@@ -15,17 +15,16 @@ class AuthHttpClient(
     persistManager: PersistManager
 ) : CommonHttpClient(tag, baseUrl) {
 
-    private var accessToken by persistManager.preference("")
-    private var refreshToken by persistManager.preference("")
-    private var userId by persistManager.preference(0)
+    // https://github.com/ioannisa/SecurePersist
+    private var authInfo by persistManager.preference(AuthInfo())
 
     override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
         install(Auth) {
             bearer {
                 loadTokens {
                     BearerTokens(
-                        accessToken = accessToken,
-                        refreshToken = refreshToken
+                        accessToken = authInfo.accessToken,
+                        refreshToken = authInfo.refreshToken
                     )
                 }
 
@@ -33,7 +32,7 @@ class AuthHttpClient(
                     val response = post<AccessTokenRequest, AccessTokenResponse>(
                         route = "/auth/refresh",
                         body = AccessTokenRequest(
-                            refreshToken = refreshToken,
+                            refreshToken = authInfo.refreshToken,
                             expiresInMins = 1
                         )
                     )
@@ -51,8 +50,8 @@ class AuthHttpClient(
                     }
 
                     BearerTokens(
-                        accessToken = accessToken,
-                        refreshToken = refreshToken
+                        accessToken = authInfo.accessToken,
+                        refreshToken = authInfo.refreshToken
                     )
                 }
             }
@@ -60,21 +59,23 @@ class AuthHttpClient(
     }
 
     fun persistAuthInfo(accessToken: String, refreshToken: String, userId: Int? = null) {
-        this.accessToken = accessToken
-        this.refreshToken = refreshToken
-        if (userId != null) {
-            this.userId = userId
-        }
+
+        // as simple as that, just change the value of your object and it gets encrypted and saved
+        this.authInfo = authInfo.copy(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            userId = userId ?: this.authInfo.userId
+        )
     }
 
     fun loadAuthInfo(): AuthInfo {
-        return AuthInfo(accessToken, refreshToken, userId)
+        return authInfo
     }
 
     data class AuthInfo(
-        val accessToken: String,
-        val refreshToken: String,
-        val userId: Int
+        val accessToken: String = "",
+        val refreshToken: String = "",
+        val userId: Int = 0
     )
 
     @Serializable
