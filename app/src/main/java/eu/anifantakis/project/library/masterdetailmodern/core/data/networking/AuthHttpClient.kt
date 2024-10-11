@@ -17,7 +17,15 @@ class AuthHttpClient(
 ) : CommonHttpClient(tag, baseUrl) {
 
     // https://github.com/ioannisa/SecurePersist
-    private var authInfo by persistManager.preference(AuthInfo())
+
+    // property-delegation using datastore with encryption
+    private var authInfo by persistManager.dataStoreDelegate(AuthInfo())
+
+    // or...
+
+    // property-delegation using EncryptedSharedPreferences
+    // private var authInfo by persistManager.sharedPreferenceDelegate(AuthInfo())
+
 
     override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
         install(Auth) {

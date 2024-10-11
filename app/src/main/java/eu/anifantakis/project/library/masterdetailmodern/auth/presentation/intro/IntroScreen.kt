@@ -53,9 +53,9 @@ fun IntroScreen(
     LaunchedEffect(Unit) {
 
         val pm = PersistManager(context, "${BuildConfig.APPLICATION_ID}.securedPersistence")
-        var accessToken by pm.preference("")
-        var refreshToken by pm.preference("")
-        var userId by pm.preference(0)
+        var accessToken by pm.sharedPreferenceDelegate("")
+        var refreshToken by pm.sharedPreferenceDelegate("")
+        var userId by pm.sharedPreferenceDelegate(0)
 
 
         Timber.tag("PERSISTENCE").d(
