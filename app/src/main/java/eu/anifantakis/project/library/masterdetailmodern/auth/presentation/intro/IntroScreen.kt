@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import eu.anifantakis.lib.securepersist.PersistManager
 import eu.anifantakis.project.library.masterdetailmodern.BuildConfig
 import eu.anifantakis.project.library.masterdetailmodern.R
+import eu.anifantakis.project.library.masterdetailmodern.core.data.networking.AuthHttpClient
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.Icons
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.UIConst
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppActionButton
@@ -53,13 +54,10 @@ fun IntroScreen(
     LaunchedEffect(Unit) {
 
         val pm = PersistManager(context, "${BuildConfig.APPLICATION_ID}.securedPersistence")
-        var accessToken by pm.sharedPreferenceDelegate("")
-        var refreshToken by pm.sharedPreferenceDelegate("")
-        var userId by pm.sharedPreferenceDelegate(0)
-
+        val authInfo by pm.preference(AuthHttpClient.AuthInfo())
 
         Timber.tag("PERSISTENCE").d(
-            "accessToken:${accessToken}, refreshToken:${refreshToken}, userId:${userId}"
+            "accessToken:${authInfo.accessToken}, refreshToken:${authInfo.refreshToken}, userId:${authInfo.userId}"
         )
     }
 
