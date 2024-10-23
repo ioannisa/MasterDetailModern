@@ -30,12 +30,17 @@ import java.nio.channels.UnresolvedAddressException
 import kotlin.coroutines.cancellation.CancellationException
 
 abstract class CommonHttpClient(
-    open val tag: String,
-    open val baseUrl: String
+    private val baseUrl: String,
+    private val logging: Boolean = true
 ) {
-    open val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = null
+    private val logTag: String by lazy {
+        this::class.simpleName ?: "Unknown"
+    }
 
-    val client: HttpClient by lazy {
+    protected abstract val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)?
+
+    @PublishedApi
+    internal val client: HttpClient by lazy {
         HttpClient(CIO) {
             // Install standard plugins
             install(ContentNegotiation) {
@@ -44,13 +49,15 @@ abstract class CommonHttpClient(
                 })
             }
 
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Timber.tag("$tag Http Client").d(message)
+            if (logging) {
+                install(Logging) {
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            Timber.tag("$logTag Klient").d(message)
+                        }
                     }
+                    level = LogLevel.ALL
                 }
-                level = LogLevel.ALL
             }
 
             defaultRequest {
@@ -65,107 +72,74 @@ abstract class CommonHttpClient(
         }
     }
 
+    suspend inline fun <reified T> responseToResult(response: HttpResponse): DataResult<T, DataError.Network> {
+        return when (response.status.value) {
+            in 200..299 -> DataResult.Success(response.body())
+            401 -> DataResult.Failure(DataError.Network.UNAUTHORIZED)
+            408 -> DataResult.Failure(DataError.Network.REQUEST_TIMEOUT)
+            409 -> DataResult.Failure(DataError.Network.CONFLICT)
+            413 -> DataResult.Failure(DataError.Network.PAYLOAD_TOO_LARGE)
+            429 -> DataResult.Failure(DataError.Network.TOO_MANY_REQUESTS)
+            in 500..599 -> DataResult.Failure(DataError.Network.SERVER_ERROR)
+            else -> DataResult.Failure(DataError.Network.UNKNOWN)
+        }
+    }
+
+    // Error handling methods
+    suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): DataResult<T, DataError.Network> {
+        return try {
+            responseToResult(execute())
+        } catch (e: UnresolvedAddressException) {
+            e.printStackTrace()
+            DataResult.Failure(DataError.Network.NO_INTERNET)
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            DataResult.Failure(DataError.Network.SERIALIZATION)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            DataResult.Failure(DataError.Network.UNKNOWN)
+        }
+    }
+
     // Networking methods
     suspend inline fun <reified Response : Any> get(
         route: String,
         queryParameters: Map<String, Any?> = mapOf()
     ): DataResult<Response, DataError.Network> {
-        return client.get(route, queryParameters)
+        return safeCall {
+            client.get {
+                url(route)
+                queryParameters.forEach { (key, value) ->
+                    parameter(key, value)
+                }
+            }
+        }
     }
 
     suspend inline fun <reified Request : Any, reified Response : Any> post(
         route: String,
         body: Request
     ): DataResult<Response, DataError.Network> {
-        return client.post(route, body)
+        return safeCall {
+            client.post {
+                url(route)
+                setBody(body)
+            }
+        }
     }
 
-    suspend inline fun <reified Response : Any> delete(
+    suspend inline fun <reified Response : Any> HttpClient.delete(
         route: String,
         queryParameters: Map<String, Any?> = mapOf()
     ): DataResult<Response, DataError.Network> {
-        return client.delete(route, queryParameters)
-    }
-}
-
-// Networking methods
-suspend inline fun <reified Response : Any> HttpClient.get(
-    route: String,
-    queryParameters: Map<String, Any?> = mapOf()
-): DataResult<Response, DataError.Network> {
-    return safeCall {
-        this.get {
-            url(route)
-            queryParameters.forEach { (key, value) ->
-                parameter(key, value)
+        return safeCall {
+            client.delete {
+                url(route)
+                queryParameters.forEach { (key, value) ->
+                    parameter(key, value)
+                }
             }
         }
     }
-}
-
-suspend inline fun <reified Request : Any, reified Response : Any> HttpClient.post(
-    route: String,
-    body: Request
-): DataResult<Response, DataError.Network> {
-    return safeCall {
-        this.post {
-            url(route)
-            setBody(body)
-        }
-    }
-}
-
-suspend inline fun <reified Response : Any> HttpClient.delete(
-    route: String,
-    queryParameters: Map<String, Any?> = mapOf()
-): DataResult<Response, DataError.Network> {
-    return safeCall {
-        this.delete {
-            url(route)
-            queryParameters.forEach { (key, value) ->
-                parameter(key, value)
-            }
-        }
-    }
-}
-
-// Error handling methods
-suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): DataResult<T, DataError.Network> {
-    return try {
-        responseToResult(execute())
-    } catch (e: UnresolvedAddressException) {
-        e.printStackTrace()
-        DataResult.Failure(DataError.Network.NO_INTERNET)
-    } catch (e: SerializationException) {
-        e.printStackTrace()
-        DataResult.Failure(DataError.Network.SERIALIZATION)
-    } catch (e: Exception) {
-        if (e is CancellationException) throw e
-        e.printStackTrace()
-        DataResult.Failure(DataError.Network.UNKNOWN)
-    }
-}
-
-suspend inline fun <reified T> responseToResult(response: HttpResponse): DataResult<T, DataError.Network> {
-    return when (response.status.value) {
-        in 200..299 -> DataResult.Success(response.body())
-        401 -> DataResult.Failure(DataError.Network.UNAUTHORIZED)
-        408 -> DataResult.Failure(DataError.Network.REQUEST_TIMEOUT)
-        409 -> DataResult.Failure(DataError.Network.CONFLICT)
-        413 -> DataResult.Failure(DataError.Network.PAYLOAD_TOO_LARGE)
-        429 -> DataResult.Failure(DataError.Network.TOO_MANY_REQUESTS)
-        in 500..599 -> DataResult.Failure(DataError.Network.SERVER_ERROR)
-        else -> DataResult.Failure(DataError.Network.UNKNOWN)
-    }
-}
-
-abstract class CommonHttpClientWithAdditionalConfig(
-    tag: String,
-    baseUrl: String,
-    private val additionalConfigProvider: (() -> (HttpClientConfig<CIOEngineConfig>.() -> Unit)?)? = null
-) : CommonHttpClient(tag, baseUrl) {
-
-    // Override additionalConfig to invoke the provider when accessed
-    final override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)?
-        get() = additionalConfigProvider?.invoke()
 }

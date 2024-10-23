@@ -2,7 +2,6 @@ package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
 import eu.anifantakis.lib.securepersist.DataStorePref
 import eu.anifantakis.lib.securepersist.PersistManager
-import eu.anifantakis.lib.securepersist.SharedPref
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.cio.CIOEngineConfig
@@ -13,10 +12,10 @@ import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 class AuthHttpClient(
-    tag: String,
     baseUrl: String,
-    persistManager: PersistManager
-) : CommonHttpClient(tag, baseUrl) {
+    persistManager: PersistManager,
+    logging: Boolean = true
+) : CommonHttpClient(baseUrl, logging) {
 
     // https://github.com/ioannisa/SecurePersist
 

@@ -9,12 +9,12 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 
 class MoviesHttpClient(
-    tag: String,
     baseUrl: String,
-    private val apiKey: String? = null
-) : CommonHttpClient(tag, baseUrl) {
+    private val apiKey: String? = null,
+    logging: Boolean = true
+) : CommonHttpClient(baseUrl, logging){
 
-    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)? = {
+    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
         defaultRequest {
             contentType(ContentType.Application.Json)
             url {

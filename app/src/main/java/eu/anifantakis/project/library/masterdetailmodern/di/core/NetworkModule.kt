@@ -9,17 +9,17 @@ import org.koin.dsl.module
 val networkModule = module {
     single<AuthHttpClient> {
         AuthHttpClient(
-            tag = "Auth",
             baseUrl = BuildConfig.BASE_URL_AUTH,
-            persistManager = get()
+            persistManager = get(),
+            logging = BuildConfig.DEBUG
         )
     }
 
     single<MoviesHttpClient> {
         MoviesHttpClient(
-            tag = "Movies",
             baseUrl = BuildConfig.BASE_URL_MOVIES,
-            apiKey = BuildConfig.API_KEY_MOVIES
+            apiKey = BuildConfig.API_KEY_MOVIES,
+            logging = BuildConfig.DEBUG
         )
     }
 }
