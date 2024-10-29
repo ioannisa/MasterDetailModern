@@ -111,7 +111,8 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
 
     // Secured Android Persistence
-    implementation(libs.securedandroidpersistence)
+    implementation(libs.secure.persist)
+    implementation(libs.secure.persist.compose)
 
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)

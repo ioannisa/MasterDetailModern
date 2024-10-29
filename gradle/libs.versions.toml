@@ -20,7 +20,7 @@ room = "2.6.1"
 ktor = "2.3.8"
 ktorClientLogging = "2.3.8"
 koin = "3.5.3"
-securedandroidpersistence = "2.2.1"
+securePersist = "2.3.0"
 timber = "5.0.1"
 uiTextGoogleFonts = "1.7.4"
 coreSplashscreen = "1.0.1"
@@ -41,7 +41,8 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
-securedandroidpersistence = { module = "com.github.ioannisa:SecuredAndroidPersistence", version.ref = "securedandroidpersistence" }
+secure-persist = { module = "com.github.ioannisa.secured-android-persist:secure-persist", version.ref = "securePersist" }
+secure-persist-compose = { module = "com.github.ioannisa.secured-android-persist:secure-persist-compose", version.ref = "securePersist" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
