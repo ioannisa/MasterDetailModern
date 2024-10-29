@@ -1,6 +1,6 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
-import eu.anifantakis.lib.securepersist.DataStorePref
+
 import eu.anifantakis.lib.securepersist.PersistManager
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import io.ktor.client.HttpClientConfig
@@ -20,8 +20,7 @@ class AuthHttpClient(
     // https://github.com/ioannisa/SecurePersist
 
     // annotated property-delegation using datastore with encryption
-    @DataStorePref
-    private var authInfo by persistManager.annotatedPreference(AuthInfo())
+    private var authInfo by persistManager.dataStorePrefs.preference(AuthInfo())
 
     // NON-annotated property-delegation using datastore with encryption
     //private var authInfo by persistManager.preference(AuthInfo(), storage = PersistManager.Storage.DATA_STORE_ENCRYPTED)
@@ -29,8 +28,7 @@ class AuthHttpClient(
     // or...
 
     // property-delegation using EncryptedSharedPreferences
-    //@SharedPref
-    //private var authInfo by persistManager.preference(AuthInfo())
+    //private var authInfo by persistManager.sharedPrefs.preference(AuthInfo())
 
 
     override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {

@@ -54,7 +54,7 @@ fun IntroScreen(
     LaunchedEffect(Unit) {
 
         val pm = PersistManager(context, "${BuildConfig.APPLICATION_ID}.securedPersistence")
-        val authInfo by pm.preference(AuthHttpClient.AuthInfo())
+        val authInfo by pm.sharedPrefs.preference(AuthHttpClient.AuthInfo())
 
         Timber.tag("PERSISTENCE").d(
             "accessToken:${authInfo.accessToken}, refreshToken:${authInfo.refreshToken}, userId:${authInfo.userId}"
