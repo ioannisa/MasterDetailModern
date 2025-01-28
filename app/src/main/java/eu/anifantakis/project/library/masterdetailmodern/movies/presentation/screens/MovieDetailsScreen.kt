@@ -15,7 +15,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MovieDetailsScreen(
     paddingValues: PaddingValues,
-    vieModel: MoviesViewModel = koinViewModel()
+    viewModel: MoviesViewModel = koinViewModel()
 ) {
     ScreenWithLoadingIndicator(
         topAppBarConfig = TopAppBarConfig(
@@ -30,7 +30,7 @@ fun MovieDetailsScreen(
 
         Text(
             modifier = Modifier.padding(top = 48.dp),
-            text = "Detail Screen -> ${vieModel.state.selectedMovie?.id ?: 0}"
+            text = "Detail Screen -> ${viewModel.composeState.selectedMovie?.id ?: 0}"
         )
     }
 }

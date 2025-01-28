@@ -46,7 +46,7 @@ fun NavGraphBuilder.moviesGraph(navController: NavHostController, paddingValues:
 
             MovieDetailsScreen(
                 paddingValues = paddingValues,
-                vieModel = viewModel
+                viewModel = viewModel
             )
         }
     }

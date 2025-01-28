@@ -1,28 +1,28 @@
 [versions]
-agp = "8.7.1"
-kotlin = "2.0.0"
-coreKtx = "1.13.1"
+agp = "8.7.3"
+kotlin = "2.1.0"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.0"
+composeBom = "2025.01.00"
 
-com-google-devtools-ksp = "2.0.0-1.0.21"
-navigationCompose = "2.8.3"
+com-google-devtools-ksp = "2.1.0-1.0.29"
+navigationCompose = "2.8.5"
 parcelize = "2.0.0"
-kotlinxSerialization = "2.0.0"
+kotlinxSerialization = "2.1.0"
 kotlinxSerializationJson = "1.7.3"
 coil-compose = "2.6.0"
 coil-gif = "2.1.0"
 room = "2.6.1"
 ktor = "2.3.8"
 ktorClientLogging = "2.3.8"
-koin = "3.5.3"
-securePersist = "2.4.0"
+koin = "4.0.0"
+securePersist = "2.5.6"
 timber = "5.0.1"
-uiTextGoogleFonts = "1.7.4"
+uiTextGoogleFonts = "1.7.6"
 coreSplashscreen = "1.0.1"
 
 [libraries]
@@ -50,9 +50,11 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil-gif" }
+
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 

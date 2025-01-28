@@ -53,7 +53,7 @@ fun MoviesListScreenRoot(
     onNavigateToMovieDetails: (Int) -> Unit,
     viewModel: MoviesViewModel = koinViewModel()
 ) {
-    ObserveAsEvents(viewModel.events) { event ->
+    ObserveAsEvents(viewModel.viewEffect) { event ->
         when (event) {
             is MoviesListEvent.GotoMovieDetails -> {
                 if (event.movieId > 0)
@@ -76,8 +76,8 @@ fun MoviesListScreenRoot(
     ) {
 
         MoviesListScreen(
-            state = viewModel.state,
-            onAction = viewModel::onAction
+            state = viewModel.composeState,
+            onAction = viewModel::processIntent
         )
     }
 }
