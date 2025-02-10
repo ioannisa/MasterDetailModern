@@ -42,8 +42,9 @@ abstract class BaseMviViewModel<S, I, E>(
      *  3) If there's an effect, we emit it for the UI to consume.
      */
     fun processIntent(intent: I) {
-        setState(reduce(currentState, intent)) // Step 1: Update the state
-        handleIntent(intent) // Step 2: Handle side effects separately
+        val newState = reduce(currentState, intent)
+        setState(newState)
+        handleIntent(intent, newState)
     }
 
     /**
@@ -54,7 +55,7 @@ abstract class BaseMviViewModel<S, I, E>(
     protected abstract fun reduce(oldState: S, intent: I): S
 
     // Handles side effects (e.g., network requests, navigation, database updates).
-    protected open fun handleIntent(intent: I) {}
+    protected open fun handleIntent(intent: I, newState: S) {}
 
     /**
      * Updates our StateFlow with a fresh state.

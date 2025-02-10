@@ -48,12 +48,11 @@ class MoviesViewModel(
         }
     }
 
-    override fun handleIntent(intent: MoviesListIntent) {
+    override fun handleIntent(intent: MoviesListIntent, newState: MoviesListState) {
         when (intent) {
             is MoviesListIntent.LoadMovies -> loadMovies()
             is MoviesListIntent.SelectMovie -> {
-                val movie = currentState.movies.firstOrNull { it.id == intent.movieId }
-                movie?.let { postEffect(MoviesListEffect.GotoMovieDetails(it.id)) }
+                newState.selectedMovie?.let { postEffect(MoviesListEffect.GotoMovieDetails(it.id)) }
             }
         }
     }
@@ -81,3 +80,4 @@ class MoviesViewModel(
         }
     }
 }
+
