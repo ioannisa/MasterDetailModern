@@ -1,6 +1,7 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.businesslogic
 
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.toComposeState
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseMviViewModel<S, I, E>(
     initialState: S
-) : BaseViewModel() {
+) : ViewModel() {
 
     // The current immutable State
     private val _viewState = MutableStateFlow(initialState)
@@ -41,19 +42,19 @@ abstract class BaseMviViewModel<S, I, E>(
      *  3) If there's an effect, we emit it for the UI to consume.
      */
     fun processIntent(intent: I) {
-        val (newState, effect) = reduce(currentState, intent)
-        setState(newState)
-        effect?.let { postEffect(it) }
+        setState(reduce(currentState, intent)) // Step 1: Update the state
+        handleIntent(intent) // Step 2: Handle side effects separately
     }
 
     /**
      * The child ViewModel implements how to combine oldState + Intent.
      * The result is (newState, optionalEffect).
      */
-    protected abstract fun reduce(
-        oldState: S,
-        intent: I
-    ): Pair<S, E?>
+    // Pure function: Only returns new state, does not launch coroutines or perform side effects.
+    protected abstract fun reduce(oldState: S, intent: I): S
+
+    // Handles side effects (e.g., network requests, navigation, database updates).
+    protected open fun handleIntent(intent: I) {}
 
     /**
      * Updates our StateFlow with a fresh state.

@@ -37,19 +37,24 @@ class MoviesViewModel(
     override fun reduce(
         oldState: MoviesListState,
         intent: MoviesListAction
-    ): Pair<MoviesListState, MoviesListEvent?> = when (intent) {
-        is MoviesListAction.LoadMovies -> {
-            // Launch loading in a separate coroutine
-            loadMovies()
+    ): MoviesListState {
+        return when (intent) {
+            is MoviesListAction.LoadMovies -> oldState.copy(isLoading = true)
 
-            // Initial state update showing loading
-            oldState.copy(isLoading = true) to null
+            is MoviesListAction.SelectMovie -> {
+                val movie = oldState.movies.firstOrNull { it.id == intent.movieId }
+                oldState.copy(selectedMovie = movie)
+            }
         }
+    }
 
-        is MoviesListAction.SelectMovie -> {
-            val movie = oldState.movies.firstOrNull { it.id == intent.movieId }
-            oldState.copy(selectedMovie = movie) to
-                    movie?.let { MoviesListEvent.GotoMovieDetails(it.id) }
+    override fun handleIntent(intent: MoviesListAction) {
+        when (intent) {
+            is MoviesListAction.LoadMovies -> loadMovies()
+            is MoviesListAction.SelectMovie -> {
+                val movie = currentState.movies.firstOrNull { it.id == intent.movieId }
+                movie?.let { postEffect(MoviesListEvent.GotoMovieDetails(it.id)) }
+            }
         }
     }
 
