@@ -10,6 +10,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.NavGr
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.sharedViewModel
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MovieDetailsScreen
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MoviesListScreenRoot
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelRedux
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,7 +27,7 @@ fun NavGraphBuilder.moviesGraph(navController: NavHostController, paddingValues:
         startDestination = MoviesNavType.MoviesList,
     ) {
         composable<MoviesNavType.MoviesList> {
-            val viewModel = it.sharedViewModel<MoviesViewModel>(navController)
+            val viewModel = it.sharedViewModel<MoviesViewModelRedux>(navController)
             MoviesListScreenRoot(
                 paddingValues = paddingValues,
                 onNavigateToMovieDetails = { movieId ->
@@ -42,7 +43,7 @@ fun NavGraphBuilder.moviesGraph(navController: NavHostController, paddingValues:
             val movieId = args.movieId
 
             // if we want to pass a shared view model, this is how to do it
-            val viewModel = it.sharedViewModel<MoviesViewModel>(navController)
+            val viewModel = it.sharedViewModel<MoviesViewModelRedux>(navController)
 
             MovieDetailsScreen(
                 paddingValues = paddingValues,

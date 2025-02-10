@@ -40,10 +40,10 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ba
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ScreenWithLoadingIndicator
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.TopAppBarConfig
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListIntent
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListEffect
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListState
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesViewModel
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesListIntent
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesListEffect
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesListState
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelRedux
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +51,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MoviesListScreenRoot(
     paddingValues: PaddingValues,
     onNavigateToMovieDetails: (Int) -> Unit,
-    viewModel: MoviesViewModel = koinViewModel()
+    viewModel: MoviesViewModelRedux = koinViewModel()
 ) {
     ObserveEffects(viewModel.viewEffect) { effect ->
         when (effect) {
