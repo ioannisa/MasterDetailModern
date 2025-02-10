@@ -1,14 +1,13 @@
 package eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel
 
-
 import androidx.lifecycle.viewModelScope
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.UiText
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.businesslogic.BaseMviViewModel
-import eu.anifantakis.project.library.masterdetailmodern.movies.domain.MoviesRepository
+import eu.anifantakis.project.library.masterdetailmodern.movies.domain.usecase.MoviesUseCaseManager
 import kotlinx.coroutines.launch
 
-class MoviesViewModelRedux(
-    private val moviesRepository: MoviesRepository
+class MoviesViewModelReduxAndManagers(
+    private val moviesManager: MoviesUseCaseManager
 ) : BaseMviViewModel<MoviesListState, MoviesListIntent, MoviesListEffect>(
     initialState = MoviesListState()
 ) {
@@ -41,12 +40,12 @@ class MoviesViewModelRedux(
     private fun loadMovies() {
         viewModelScope.launch {
             try {
-                moviesRepository.getMovies().collect { movies ->
+                moviesManager.loadMovies().collect { movies ->
                     setState(currentState.copy(movies = movies)) // ✅ Allowed, as it's a response to a side effect
                 }
 
                 // Fetch fresh movies
-                moviesRepository.fetchMovies()
+                moviesManager.fetchMovies()
 
                 setState(currentState.copy(isLoading = false)) // ✅ Allowed here, avoids extra intent
                 postEffect(MoviesListEffect.MoviesListSuccess)
@@ -63,5 +62,3 @@ class MoviesViewModelRedux(
     }
 
 }
-
-

@@ -44,6 +44,7 @@ import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.scr
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesListEffect
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesListState
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelRedux
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelReduxAndManagers
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +52,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MoviesListScreenRoot(
     paddingValues: PaddingValues,
     onNavigateToMovieDetails: (Int) -> Unit,
-    viewModel: MoviesViewModelRedux = koinViewModel()
+    viewModel: MoviesViewModelReduxAndManagers = koinViewModel()
 ) {
     ObserveEffects(viewModel.viewEffect) { effect ->
         when (effect) {

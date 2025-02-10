@@ -10,12 +10,13 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ba
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ScreenWithLoadingIndicator
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.TopAppBarConfig
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelRedux
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelReduxAndManagers
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MovieDetailsScreen(
     paddingValues: PaddingValues,
-    viewModel: MoviesViewModelRedux = koinViewModel()
+    viewModel: MoviesViewModelReduxAndManagers = koinViewModel()
 ) {
     ScreenWithLoadingIndicator(
         topAppBarConfig = TopAppBarConfig(
