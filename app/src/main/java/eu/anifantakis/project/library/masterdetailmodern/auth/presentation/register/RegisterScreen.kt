@@ -33,7 +33,7 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.desig
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppPasswordTextField
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppTextField
-import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveAsEvents
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveEffects
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.correctGreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -47,7 +47,7 @@ fun RegisterScreenRoot(
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    ObserveAsEvents(viewModel.events) { event ->
+    ObserveEffects(viewModel.events) { event ->
         keyboardController?.hide()
 
         when (event) {

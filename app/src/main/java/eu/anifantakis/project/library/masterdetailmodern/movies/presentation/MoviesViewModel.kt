@@ -8,15 +8,15 @@ import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.MoviesRepository
 import kotlinx.coroutines.launch
 
-sealed interface MoviesListAction {
-    data object LoadMovies : MoviesListAction
-    data class SelectMovie(val movieId: Int) : MoviesListAction
+sealed interface MoviesListIntent {
+    data object LoadMovies : MoviesListIntent
+    data class SelectMovie(val movieId: Int) : MoviesListIntent
 }
 
-sealed interface MoviesListEvent {
-    data object MoviesListSuccess : MoviesListEvent
-    data class Error(val error: UiText) : MoviesListEvent
-    data class GotoMovieDetails(val movieId: Int) : MoviesListEvent
+sealed interface MoviesListEffect {
+    data object MoviesListSuccess : MoviesListEffect
+    data class Error(val error: UiText) : MoviesListEffect
+    data class GotoMovieDetails(val movieId: Int) : MoviesListEffect
 }
 
 data class MoviesListState(
@@ -27,33 +27,33 @@ data class MoviesListState(
 
 class MoviesViewModel(
     private val moviesRepository: MoviesRepository
-) : BaseMviViewModel<MoviesListState, MoviesListAction, MoviesListEvent>(
+) : BaseMviViewModel<MoviesListState, MoviesListIntent, MoviesListEffect>(
     initialState = MoviesListState()
 ) {
     init {
-        processIntent(MoviesListAction.LoadMovies)
+        processIntent(MoviesListIntent.LoadMovies)
     }
 
     override fun reduce(
         oldState: MoviesListState,
-        intent: MoviesListAction
+        intent: MoviesListIntent
     ): MoviesListState {
         return when (intent) {
-            is MoviesListAction.LoadMovies -> oldState.copy(isLoading = true)
+            is MoviesListIntent.LoadMovies -> oldState.copy(isLoading = true)
 
-            is MoviesListAction.SelectMovie -> {
+            is MoviesListIntent.SelectMovie -> {
                 val movie = oldState.movies.firstOrNull { it.id == intent.movieId }
                 oldState.copy(selectedMovie = movie)
             }
         }
     }
 
-    override fun handleIntent(intent: MoviesListAction) {
+    override fun handleIntent(intent: MoviesListIntent) {
         when (intent) {
-            is MoviesListAction.LoadMovies -> loadMovies()
-            is MoviesListAction.SelectMovie -> {
+            is MoviesListIntent.LoadMovies -> loadMovies()
+            is MoviesListIntent.SelectMovie -> {
                 val movie = currentState.movies.firstOrNull { it.id == intent.movieId }
-                movie?.let { postEffect(MoviesListEvent.GotoMovieDetails(it.id)) }
+                movie?.let { postEffect(MoviesListEffect.GotoMovieDetails(it.id)) }
             }
         }
     }
@@ -71,10 +71,10 @@ class MoviesViewModel(
                 moviesRepository.fetchMovies()
 
                 setState(currentState.copy(isLoading = false))
-                postEffect(MoviesListEvent.MoviesListSuccess)
+                postEffect(MoviesListEffect.MoviesListSuccess)
             } catch (e: Exception) {
                 setState(currentState.copy(isLoading = false))
-                postEffect(MoviesListEvent.Error(
+                postEffect(MoviesListEffect.Error(
                     UiText.DynamicString(e.message ?: "Unknown error")
                 ))
             }

@@ -33,15 +33,15 @@ import eu.anifantakis.project.library.masterdetailmodern.R
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.year
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.UIConst
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.designsystem.components.AppBackground
-import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveAsEvents
+import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.ObserveEffects
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ExtraPaddings
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.LifecycleConfig
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.PullToRefreshList
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.ScreenWithLoadingIndicator
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.base.TopAppBarConfig
 import eu.anifantakis.project.library.masterdetailmodern.movies.domain.Movie
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListAction
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListEvent
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListIntent
+import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListEffect
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesListState
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.MoviesViewModel
 import eu.anifantakis.project.library.masterdetailmodern.ui.theme.AppTheme
@@ -53,11 +53,11 @@ fun MoviesListScreenRoot(
     onNavigateToMovieDetails: (Int) -> Unit,
     viewModel: MoviesViewModel = koinViewModel()
 ) {
-    ObserveAsEvents(viewModel.viewEffect) { event ->
-        when (event) {
-            is MoviesListEvent.GotoMovieDetails -> {
-                if (event.movieId > 0)
-                    onNavigateToMovieDetails(event.movieId)
+    ObserveEffects(viewModel.viewEffect) { effect ->
+        when (effect) {
+            is MoviesListEffect.GotoMovieDetails -> {
+                if (effect.movieId > 0)
+                    onNavigateToMovieDetails(effect.movieId)
             }
             else -> { }
         }
@@ -85,7 +85,7 @@ fun MoviesListScreenRoot(
 @Composable
 private fun MoviesListScreen(
     state: MoviesListState,
-    onAction: (MoviesListAction) -> Unit,
+    onAction: (MoviesListIntent) -> Unit,
 ) {
     AppBackground {
         Column(
@@ -108,7 +108,7 @@ private fun MoviesListScreen(
                             movie = movie,
                             modifier = Modifier
                                 .clickable {
-                                    onAction(MoviesListAction.SelectMovie(movie.id))
+                                    onAction(MoviesListIntent.SelectMovie(movie.id))
                                 }
                         )
                     }
