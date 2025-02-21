@@ -16,6 +16,7 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
@@ -75,11 +76,30 @@ abstract class CommonHttpClient(
     suspend inline fun <reified T> responseToResult(response: HttpResponse): DataResult<T, DataError.Network> {
         return when (response.status.value) {
             in 200..299 -> DataResult.Success(response.body())
+
+            // Client Errors
+            400 -> DataResult.Failure(DataError.Network.BAD_REQUEST)
             401 -> DataResult.Failure(DataError.Network.UNAUTHORIZED)
+            403 -> DataResult.Failure(DataError.Network.FORBIDDEN)
+            404 -> DataResult.Failure(DataError.Network.NOT_FOUND)
+            405 -> DataResult.Failure(DataError.Network.METHOD_NOT_ALLOWED)
+            406 -> DataResult.Failure(DataError.Network.NOT_ACCEPTABLE)
+            407 -> DataResult.Failure(DataError.Network.PROXY_AUTHENTICATION_REQUIRED)
             408 -> DataResult.Failure(DataError.Network.REQUEST_TIMEOUT)
             409 -> DataResult.Failure(DataError.Network.CONFLICT)
+            410 -> DataResult.Failure(DataError.Network.GONE)
             413 -> DataResult.Failure(DataError.Network.PAYLOAD_TOO_LARGE)
             429 -> DataResult.Failure(DataError.Network.TOO_MANY_REQUESTS)
+
+            // Server Errors
+            500 -> DataResult.Failure(DataError.Network.INTERNAL_SERVER_ERROR)
+            501 -> DataResult.Failure(DataError.Network.NOT_IMPLEMENTED)
+            502 -> DataResult.Failure(DataError.Network.BAD_GATEWAY)
+            503 -> DataResult.Failure(DataError.Network.SERVICE_UNAVAILABLE)
+            504 -> DataResult.Failure(DataError.Network.GATEWAY_TIMEOUT)
+
+            // Every other Error
+            in 400..499 -> DataResult.Failure(DataError.Network.CLIENT_ERROR)
             in 500..599 -> DataResult.Failure(DataError.Network.SERVER_ERROR)
             else -> DataResult.Failure(DataError.Network.UNKNOWN)
         }
@@ -123,6 +143,18 @@ abstract class CommonHttpClient(
     ): DataResult<Response, DataError.Network> {
         return safeCall {
             client.post {
+                url(route)
+                setBody(body)
+            }
+        }
+    }
+
+    suspend inline fun <reified Request : Any, reified Response : Any> put(
+        route: String,
+        body: Request
+    ): DataResult<Response, DataError.Network> {
+        return safeCall {
+            client.put {
                 url(route)
                 setBody(body)
             }

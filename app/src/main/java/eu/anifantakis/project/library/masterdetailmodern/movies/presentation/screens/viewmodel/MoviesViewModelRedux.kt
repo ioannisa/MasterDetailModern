@@ -13,6 +13,9 @@ class MoviesViewModelRedux(
     initialState = MoviesListState()
 ) {
     init {
+        viewModelScope.launch {
+            moviesRepository.fetchMovies()
+        }
         processIntent(MoviesListIntent.LoadMovies)
     }
 

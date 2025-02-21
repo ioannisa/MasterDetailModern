@@ -12,6 +12,9 @@ class MoviesViewModelReduxAndManagers(
     initialState = MoviesListState()
 ) {
     init {
+        viewModelScope.launch {
+            moviesManager.fetchMovies()
+        }
         processIntent(MoviesListIntent.LoadMovies)
     }
 
@@ -43,9 +46,6 @@ class MoviesViewModelReduxAndManagers(
                 moviesManager.loadMovies().collect { movies ->
                     setState(currentState.copy(movies = movies)) // ✅ Allowed, as it's a response to a side effect
                 }
-
-                // Fetch fresh movies
-                moviesManager.fetchMovies()
 
                 setState(currentState.copy(isLoading = false)) // ✅ Allowed here, avoids extra intent
                 postEffect(MoviesListEffect.MoviesListSuccess)

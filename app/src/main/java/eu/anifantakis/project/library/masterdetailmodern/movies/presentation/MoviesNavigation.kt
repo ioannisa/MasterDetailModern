@@ -10,7 +10,6 @@ import eu.anifantakis.project.library.masterdetailmodern.core.presentation.NavGr
 import eu.anifantakis.project.library.masterdetailmodern.core.presentation.ui.sharedViewModel
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MovieDetailsScreen
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.MoviesListScreenRoot
-import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelRedux
 import eu.anifantakis.project.library.masterdetailmodern.movies.presentation.screens.viewmodel.MoviesViewModelReduxAndManagers
 import kotlinx.serialization.Serializable
 
