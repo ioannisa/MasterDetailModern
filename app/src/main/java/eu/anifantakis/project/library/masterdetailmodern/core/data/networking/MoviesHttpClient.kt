@@ -1,7 +1,6 @@
 package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
@@ -14,7 +13,7 @@ class MoviesHttpClient(
     logging: Boolean = true
 ) : CommonHttpClient(baseUrl, logging){
 
-    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
+    override val additionalConfig: (HttpClientConfig<*>.() -> Unit) = {
         defaultRequest {
             contentType(ContentType.Application.Json)
             url {

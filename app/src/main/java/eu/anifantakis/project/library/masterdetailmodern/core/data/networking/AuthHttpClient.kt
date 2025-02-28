@@ -4,7 +4,6 @@ package eu.anifantakis.project.library.masterdetailmodern.core.data.networking
 import eu.anifantakis.lib.securepersist.PersistManager
 import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataResult
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -31,7 +30,7 @@ class AuthHttpClient(
     //private var authInfo by persistManager.sharedPrefs.preference(AuthInfo())
 
 
-    override val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit) = {
+    override val additionalConfig: (HttpClientConfig<*>.() -> Unit) = {
         install(Auth) {
             bearer {
                 loadTokens {

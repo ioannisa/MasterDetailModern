@@ -5,8 +5,8 @@ import eu.anifantakis.project.library.masterdetailmodern.core.domain.util.DataRe
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -34,6 +34,7 @@ import kotlin.coroutines.cancellation.CancellationException
 abstract class CommonHttpClient(
     private val baseUrl: String,
     private val logging: Boolean = true,
+    private val engine: HttpClientEngine = CIO.create(),
     private val requestTimeout: Long = 30_000L,
     private val connectTimeout: Long = 30_000L,
     private val socketTimeout: Long = 30_000L
@@ -42,11 +43,11 @@ abstract class CommonHttpClient(
         this::class.simpleName ?: "Unknown"
     }
 
-    protected abstract val additionalConfig: (HttpClientConfig<CIOEngineConfig>.() -> Unit)?
+    protected abstract val additionalConfig: (HttpClientConfig<*>.() -> Unit)?
 
     @PublishedApi
     internal val client: HttpClient by lazy {
-        HttpClient(CIO) {
+        HttpClient(engine) {
             // Install standard plugins
             install(ContentNegotiation) {
                 json(Json {
