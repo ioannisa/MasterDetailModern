@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MoviesDtp(
+data class MoviesDto(
     val results: List<MovieDto>
 )
 
