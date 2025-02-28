@@ -7,6 +7,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.cio.CIOEngineConfig
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -32,7 +33,10 @@ import kotlin.coroutines.cancellation.CancellationException
 
 abstract class CommonHttpClient(
     private val baseUrl: String,
-    private val logging: Boolean = true
+    private val logging: Boolean = true,
+    private val requestTimeout: Long = 30_000L,
+    private val connectTimeout: Long = 30_000L,
+    private val socketTimeout: Long = 30_000L
 ) {
     private val logTag: String by lazy {
         this::class.simpleName ?: "Unknown"
@@ -48,6 +52,12 @@ abstract class CommonHttpClient(
                 json(Json {
                     ignoreUnknownKeys = true
                 })
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = requestTimeout
+                connectTimeoutMillis = connectTimeout
+                socketTimeoutMillis = socketTimeout
             }
 
             if (logging) {
